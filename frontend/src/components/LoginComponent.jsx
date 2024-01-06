@@ -1,10 +1,12 @@
 
 import { Button, Checkbox, Label, Modal, TextInput,Select } from 'flowbite-react';
-import { useState } from 'react';
+import { useState,useContext } from 'react';
 import {apiurl} from "./apiurl"
+import AuthContext from '../context/AuthContext';
 
 export default function LoginComponent(props) {
-  const [openLoginModal, setOpenLoginModal] = useState(false);
+  const authContext = useContext(AuthContext)
+  // const [openLoginModal, setOpenLoginModal] = useState(false);
   const [messages,setMessages] = useState({loginerr:""})
   const [creds,setCreds] = useState({username:"",password:"",usertype:"normal"})
 
@@ -15,12 +17,13 @@ export default function LoginComponent(props) {
         headers:{"Content-Type":"application/json"}
     }).then(resp=>resp.json())
     .then(data=>{
+      alert(data.status)
         if (data.status == "ok"){
             localStorage.setItem("token",data.token)
-            props.setIsLoggedIn(true)
+            authContext.setIsLoggedIn(true)
         }
         else{
-            props.setIsLoggedIn(false)
+            authContext.setIsLoggedIn(false)
             setMessages({...messages,loginerr:data.message})
             setTimeout(()=>{
                 setMessages({...messages,loginerr:""})
@@ -32,8 +35,8 @@ export default function LoginComponent(props) {
 
   return (
     <>
-      <button onClick={() => setOpenLoginModal(true)} className='bg-red-500 px-3 py-1 rounded text-cyan-100'>Sign In</button>
-      <Modal show={openLoginModal} size="md" popup onClose={() => setOpenLoginModal(false)}>
+      <button onClick={() => authContext.setOpenLoginModal(true)} className='bg-red-500 px-3 py-1 rounded text-cyan-100'>Sign In</button>
+      <Modal show={authContext.openLoginModal} size="md" popup onClose={() => authContext.setOpenLoginModal(false)}>
         <Modal.Header />
         <Modal.Body>
           <div className="space-y-6">

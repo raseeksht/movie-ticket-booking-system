@@ -1,23 +1,33 @@
 
 import { Avatar, Dropdown, Navbar,DarkThemeToggle } from 'flowbite-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState,useContext } from 'react';
 import LoginComponent from './LoginComponent';
+import AuthContext from '../context/AuthContext';
+import {Link} from "react-router-dom"
 
-export default function CustomNavbar() {
-    const [isLoggedIn,setIsLoggedIn] = useState(Boolean(localStorage.getItem("token")))
+function CustomLink(props){
+  return (
+    <Link to={props.href} className='block py-2 pr-4 pl-3 md:p-0 border-b border-gray-100  text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white md:border-0 md:hover:bg-transparent md:hover:text-cyan-700 md:dark:hover:bg-transparent md:dark:hover:text-white'>{props.children}</Link>
+
+  )
+
+}
+
+export default function CustomNavbar(props) {
+    // const [isLoggedIn,setIsLoggedIn] = useState(Boolean(localStorage.getItem("token")))
+    const authContext = useContext(AuthContext)
 
     useEffect(()=>{
-        // const token = localStorage.getItem("token")
-        // if (token){
-
-        // }
+        if (localStorage.getItem("token")){
+          authContext.setIsLoggedIn(true)
+        }
     },[])
 
 
 
     const logout = () =>{
       localStorage.removeItem("token")
-      setIsLoggedIn(false)
+      authContext.setIsLoggedIn(false)
     }
 
   return (
@@ -26,8 +36,8 @@ export default function CustomNavbar() {
         <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Awesome Ticket Booker</span>
       </Navbar.Brand>
       <div className="flex md:order-2">
-        {!isLoggedIn ? 
-          <LoginComponent setIsLoggedIn={setIsLoggedIn} /> :
+        {!authContext.isLoggedIn ? 
+          <LoginComponent /> :
         
         <Dropdown
           arrowIcon={false}
@@ -52,13 +62,10 @@ export default function CustomNavbar() {
         <Navbar.Toggle />
       </div>
       <Navbar.Collapse>
-        <Navbar.Link href="#" active>
-          Home
-        </Navbar.Link>
-        <Navbar.Link href="#">About</Navbar.Link>
-        <Navbar.Link href="#">Services</Navbar.Link>
-        <Navbar.Link href="#">Pricing</Navbar.Link>
-        <Navbar.Link href="#">Contact</Navbar.Link>
+        <CustomLink href="/" >Home</CustomLink>
+        <CustomLink href="/about">About Us</CustomLink>
+        <CustomLink href="/contact" >Contact</CustomLink>
+        <CustomLink href="/profile" >Profile</CustomLink>
       </Navbar.Collapse>
     </Navbar>
   );

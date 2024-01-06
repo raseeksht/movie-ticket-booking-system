@@ -1,24 +1,162 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState,useContext } from 'react'
 import { apiurl } from './apiurl'
-import { useParams } from 'react-router-dom'
+import { useParams,useLocation } from 'react-router-dom'
 import CustomNavbar from './CustomNavbar'
+import customFetch from './authfetch'
+import AuthContext from '../context/AuthContext'
+import { Modal } from 'flowbite-react'
+import PaymentModal from './PaymentModal'
+
+
+
+
+function Trailer(props){
+    const [trailerModal, settrailerModal] = useState(false)
+    return (
+        <>
+        <div>
+            <button onClick={()=>settrailerModal(true)} className='text-sm bg-gray-400 p-1 px-2 rounded'>play trailer</button>
+
+        </div>
+        <Modal className='' show={trailerModal} position={"center"} onClose={()=>settrailerModal(false)}>
+            
+        <Modal.Header>{props.movie.name} | Trailer</Modal.Header>
+        <iframe className='aspect-video' src="https://www.youtube.com/embed/0DoJQ4Cov9I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </Modal>
+        </>
+    )
+}
 
 export default function MovieBookingPage() {
+    const authContext = useContext(AuthContext)
     const movieId = useParams().movieId
+
+    // success payment
+    const { search } = useLocation();
+    const queryParams = new URLSearchParams(search);
+ 
+
     const [movie,setMovie] = useState(null)
+    const [mySeats,setMySeats] = useState([])
+    const [price,setPrice] = useState(0)
+    const [btnDisabled,setBtnDisabled] = useState(true)
     useEffect(()=>{
         fetch(`${apiurl}/movies/${movieId}`)
         .then(data=>data.json())
-        .then(data=>setMovie(data.movie))
+        .then(data=>{
+            setMovie(data.movie)
+        })
         .catch(err=>console.log(err))
+
+        const s = queryParams.get("s")
+        console.log("is aweomse",queryParams)
+        const oid = queryParams.get("oid")
+        const refId = queryParams.get("refId")
+        const amt = queryParams.get("amt")
+        const seats = queryParams.get("seats")
+        if (s == '1'){
+            // validating transaction
+            // console.log(validateTxnAndBook(mySeats,rid,pid,scd,amt))
+            const payload= {
+                bookedSeats:JSON.parse(seats),
+                oid,refId,amt
+            }
+            console.log(payload)
+            customFetch(apiurl+"/movies/bookseat/"+movieId,payload)
+            .then(data=>console.log("data",data))
+            .catch(err=>console.log("error",err))
+        }else if(s == '0'){
+            alert("failed")
+            console.log("payment failed")
+        }
     },[])
+
+    useEffect(() => {
+        if (price > 0){
+            setBtnDisabled(false)
+        }else if (price == 0){
+            setBtnDisabled(true)
+        }
+    }, [price])
+
+
+    const handleSeatClick = (e,[x,y],seatStatus) => {
+        if (seatStatus == 0 || seatStatus== 2){
+            // remove selection
+            if (e.target.classList.toggle("bg-blue-500")){
+                setPrice(price - 250)
+                setMySeats(mySeats.filter(elem=> elem != `${x}-${y}`))
+
+            }
+            // add selection
+            if (e.target.classList.toggle("bg-green-500")){
+                setPrice(price + 250)
+                setMySeats([...mySeats,`${x}-${y}`])
+
+
+            }          
+        }
+    }
+
+    const handleProceedToPayment = async () =>{
+        if (!localStorage.getItem("token")){
+            return authContext.setOpenLoginModal(true)
+        }
+        authContext.setOpenPaymentModal(true)
+    }
+
+
+    
+
   return (
     <>
         <CustomNavbar />
         {movie == null? <h1>Loading</h1>:
-            <div className="container">
-                <h1 className='text-bold text-2xl dark:text-white'>{movie.name}</h1>
+            <div className="w-full container md:mx-16 md:mt-10 mx-5">
+                <div className='md:flex'>
+                    <div className='md:w-2/12 sm:w-full md:flex-col flex  dark:text-white capitalize text-2xl text-center'>
+                        <div className='w-full'>
+                            <img className='' src={movie.thumbnail} alt={movie.name}/>
+                        </div>
+                        <div className='w-full text-start p-2'>
+                            <h1 className=''>{movie.name}<span className='text-xs'>({movie.releaseDate.split(/[-/]/)[0]})</span></h1>
+                            <span className='bg-gray-500 text-sm p-1 rounded'>{movie.length} mins</span>
+                            <span className='bg-gray-500 text-sm px-2 py-1 rounded mx-2'>{movie.rating}</span>
+                            <Trailer movie={movie}/>
+                        </div>
+                    </div>
+                    <div className='dark:text-white md:w-9/12 w-[90%] md:mx-10 text-lg'>
+                        <h1 className=''>Now Showing</h1>
+                        <div><u>Book Your Seat</u></div>
+                        <div className='text-center mt-10 border-2 border-solid'>Screen Side</div>
+                        <div className='seats mt-5'>
+                            {movie.seats.map((row,rowIndex)=>(
+                                
+                                <div className='flex justify-center' key={rowIndex} value={rowIndex}>
+                                {row.map((col,colIndex)=>(
+                                    <div
+                                     key={colIndex}
+                                     className={`${col === 1 ? 'bg-red-500' : 'bg-blue-500'} h-7 w-7 m-1 text-center`}
+                                     onClick={(e)=>handleSeatClick(e,[rowIndex,colIndex],col)}
+                                     >
+                                     {String.fromCharCode(65 + rowIndex)}{colIndex}
+                                   </div>
+        
+                                ))}
+                                </div>
+                            ))}
+                        </div>
+                        <div>
+                            Total Price: {price}
+                        </div>
+                        <button onClick={handleProceedToPayment} className={`${btnDisabled? 'bg-gray-500':'bg-red-500'} rounded px-2 py-1`} disabled={btnDisabled} id="proceedToPaymentBtn">Proceed to Payment</button>
+                    </div>
+
+                </div>
+        <PaymentModal movie={movie} price={price} mySeats={mySeats} />
+                
             </div>
+            
         
         }
         
