@@ -1,0 +1,40 @@
+const customFetch = (url, payload, customHeader = {}) => {
+    return new Promise((resolve, reject) => {
+        const token = localStorage.getItem("token");
+        console.log(token)
+        if (!token) {
+            const tokenError = new Error("Token not found")
+            tokenError.name = "tokenError"
+            reject(tokenError);
+            return;
+        }
+
+        const headers = {
+            ...customHeader,
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        };
+
+        fetch(url, {
+            method: "POST",
+            body: JSON.stringify(payload),
+            headers: headers
+        })
+        .then(resp => resp.json())
+        .then(data => {
+            if (data.status == "ok") {
+                alert(data.message);
+                resolve(data); // Resolve with the data if status is "ok"
+            } else {
+                alert(data.message);
+                reject(new Error(data.message)); // Reject with an error if status is not "ok"
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            reject(err); // Reject with the caught error
+        });
+    });
+};
+
+export default customFetch;
