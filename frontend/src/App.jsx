@@ -1,6 +1,4 @@
 import React, { useEffect ,useState} from 'react'
-
-// import CustomNav from './components/CustomNavbar'
 import Home from './components/Home'
 import {
   BrowserRouter as Router,
@@ -13,6 +11,7 @@ import AuthContext from './context/AuthContext'
 export default function App() {
   const [openLoginModal, setOpenLoginModal] = useState(false);
   const [openPaymentModal, setOpenPaymentModal] = useState(false);
+  const [alert,setAlert] = useState(null)
   const [isLoggedIn,setIsLoggedIn] = useState(Boolean(localStorage.getItem("token")))
 
 
@@ -23,7 +22,8 @@ export default function App() {
       setOpenLoginModal,
       isLoggedIn,
       setIsLoggedIn,
-      openPaymentModal,setOpenPaymentModal
+      openPaymentModal,setOpenPaymentModal,
+      alert,setAlert
       }}>
     <Router>
       <Routes>

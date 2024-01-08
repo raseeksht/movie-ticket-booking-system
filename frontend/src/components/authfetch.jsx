@@ -23,10 +23,8 @@ const customFetch = (url, payload, customHeader = {}) => {
         .then(resp => resp.json())
         .then(data => {
             if (data.status == "ok") {
-                alert(data.message);
                 resolve(data); // Resolve with the data if status is "ok"
             } else {
-                alert(data.message);
                 reject(new Error(data.message)); // Reject with an error if status is not "ok"
             }
         })
