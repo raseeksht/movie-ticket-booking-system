@@ -1,11 +1,12 @@
 import React, { useEffect, useState,useContext } from 'react'
 import { apiurl } from './apiurl'
-import { useParams,useLocation } from 'react-router-dom'
+import { useParams,useLocation,useNavigate } from 'react-router-dom'
 import CustomNavbar from './CustomNavbar'
 import customFetch from './authfetch'
 import AuthContext from '../context/AuthContext'
 import { Modal } from 'flowbite-react'
 import PaymentModal from './PaymentModal'
+import ShowAlert from './Alert'
 
 
 
@@ -32,13 +33,15 @@ export default function MovieBookingPage() {
     const movieId = useParams().movieId
 
     // success payment
-    const { search } = useLocation();
-    const queryParams = new URLSearchParams(search);
+    const navigate = useNavigate()
+    const location = useLocation()
+    const queryParams = new URLSearchParams(location.search);
  
 
     const [movie,setMovie] = useState(null)
     const [mySeats,setMySeats] = useState([])
     const [price,setPrice] = useState(0)
+    const [payment,setPayment] = useState(0)
     const [btnDisabled,setBtnDisabled] = useState(true)
     useEffect(()=>{
         fetch(`${apiurl}/movies/${movieId}`)
@@ -47,29 +50,32 @@ export default function MovieBookingPage() {
             setMovie(data.movie)
         })
         .catch(err=>console.log(err))
+    },[payment])
 
+    useEffect(() => {
         const s = queryParams.get("s")
-        console.log("is aweomse",queryParams)
         const oid = queryParams.get("oid")
         const refId = queryParams.get("refId")
         const amt = queryParams.get("amt")
         const seats = queryParams.get("seats")
         if (s == '1'){
             // validating transaction
-            // console.log(validateTxnAndBook(mySeats,rid,pid,scd,amt))
             const payload= {
                 bookedSeats:JSON.parse(seats),
                 oid,refId,amt
             }
-            console.log(payload)
             customFetch(apiurl+"/movies/bookseat/"+movieId,payload)
-            .then(data=>console.log("data",data))
+            .then(data=>{
+                authContext.setAlert({type:"success",message:data.message})
+                setPayment(1)              
+            })
             .catch(err=>console.log("error",err))
         }else if(s == '0'){
-            alert("failed")
+            authContext.setAlert({type:"warning",message:"failed"})
             console.log("payment failed")
         }
-    },[])
+        navigate(location.pathname)
+    }, [])
 
     useEffect(() => {
         if (price > 0){
@@ -111,8 +117,9 @@ export default function MovieBookingPage() {
   return (
     <>
         <CustomNavbar />
+        <ShowAlert/>
         {movie == null? <h1>Loading</h1>:
-            <div className="w-full container md:mx-16 md:mt-10 mx-5">
+            <div className="w-full container md:mx-16 md:mt-10 mx-5 ">
                 <div className='md:flex'>
                     <div className='md:w-2/12 sm:w-full md:flex-col flex  dark:text-white capitalize text-2xl text-center'>
                         <div className='w-full'>
@@ -147,19 +154,24 @@ export default function MovieBookingPage() {
                             ))}
                         </div>
                         <div>
+                            <div className='my-3 text-sm'>
+                                <div className='inline-block bg-red-500 h-[22px] w-[22px] m-1 text-center text-red-500'> </div> Booked
+                                <div className='inline-block bg-blue-500 h-[22px] w-[22px] m-1 text-center text-blue-500'> </div> Available
+                                <div className='inline-block bg-green-500 h-[22px] w-[22px] m-1 text-center text-green-500'> </div> Selected Seats
+
+                            </div>
                             Total Price: {price}
                         </div>
                         <button onClick={handleProceedToPayment} className={`${btnDisabled? 'bg-gray-500':'bg-red-500'} rounded px-2 py-1`} disabled={btnDisabled} id="proceedToPaymentBtn">Proceed to Payment</button>
                     </div>
 
                 </div>
-        <PaymentModal movie={movie} price={price} mySeats={mySeats} />
+        <PaymentModal movie={movie} price={price} mySeats={mySeats} setPayment={setPayment} setPrice={setPrice}/>
                 
             </div>
             
         
         }
-        
     </>
   )
 }
