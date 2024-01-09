@@ -26,8 +26,17 @@ const movieSchema = new mongoose.Schema({
 //     arrangement: mongoose.Schema.Types.Array
 // })
 
+const transactionSchema = new mongoose.Schema({
+    user_ref: mongoose.Schema.Types.ObjectId,
+    pid:String,
+    rid:String,
+    scd:String,
+    amt:String
+})
+
 const userLoginModel = new mongoose.model("user",userLoginSchema)
 const movieModel = new mongoose.model("movie",movieSchema)
 // const movieSeatsModel = new mongoose.model("movieseat",movieSeatsSchema)
+const transactionModel = new mongoose.model("txn",transactionSchema)
 
-module.exports = {userLoginModel,movieModel}
+module.exports = {userLoginModel,movieModel,transactionModel}
