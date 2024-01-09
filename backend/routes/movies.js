@@ -2,7 +2,7 @@ const express = require("express")
 const {movieModel} = require("../models")
 const router = express.Router()
 const {verifyUser,isAdmin} = require("../middlewares/verifyuser")
-const {checkPayload} = require("./utils")
+const {checkPayload,recordTxn} = require("./utils")
 
 const axios = require("axios")
 
@@ -58,24 +58,10 @@ router.put("/:movieId",isAdmin,async (req,resp)=>{
     }
 })
 
-router.post("/bookseat/:movieId",verifyUser,async (req,resp)=>{
-    const movieId = req.params.movieId
-    const {bookedSeats,oid,refId,amt} = req.body
-    try{
-        const path="https://uat.esewa.com.np/epay/transrec";
-        const params = {pid:oid,rid:refId,amt:parseInt(amt),scd: "EPAYTEST"}
-        console.log(params)
-    
-        const response = await axios.post(path, params, {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-        })
-        console.log(response.data);
-        if (response.data.includes("Success")){
-            console.log("payment validated")
+const bookTicket = (movieId,bookedSeats)=>{
+    return new Promise(async (resolve,reject)=>{
+        try{
             const movie = await movieModel.findOne({_id:movieId})
-            // movie.save
             for (seat of bookedSeats){
                 const [x,y] = seat.split("-")
                 movie.seats[parseInt(x)][parseInt(y)] = 1
@@ -85,6 +71,37 @@ router.post("/bookseat/:movieId",verifyUser,async (req,resp)=>{
                 { $set: { seats: movie.seats} },
                 { new: true }
             );
+            resolve(result)
+        }catch(err){
+            reject(err)
+        }
+
+    })
+    
+}
+
+
+router.post("/bookseat/:movieId",verifyUser,async (req,resp)=>{
+    const movieId = req.params.movieId
+    const {bookedSeats,oid,refId,amt} = req.body
+    const scd = "EPAYTEST"
+    try{
+        const path="https://uat.esewa.com.np/epay/transrec";
+        const params = {pid:oid,rid:refId,amt:parseInt(amt),scd}
+        // console.log(params)
+    
+        const response = await axios.post(path, params, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        })
+        // console.log(response.data);
+        if (response.data.includes("Success")){
+            // add transaction to db
+            const txn = await recordTxn(req.headers,oid,refId,scd,amt)
+
+            const movie = await movieModel.findOne({_id:movieId})
+            const result = bookTicket(movieId,bookedSeats)
             resp.json({ status: "ok", message: "Seats booked successfully" });
 
         }else{
@@ -92,8 +109,20 @@ router.post("/bookseat/:movieId",verifyUser,async (req,resp)=>{
             resp.json({"status":"failed","message":"Invalid Transaction detected"})
             
         }
-
     }catch(err){
+        console.log(err)
+        resp.json({"status":"failed","message":"failed"})
+    }
+})
+
+router.post("/bookseatphysical/:movieId",verifyUser,(req,resp)=>{
+    const movieId = req.params.movieId
+    const {bookedSeats} = req.body
+    try{
+        const result = bookTicket(movieId,bookedSeats)
+        resp.json({ status: "ok", message: "Seats booked successfully" });
+    }catch(err){
+        console.log(err)
         resp.json({"status":"failed","message":"failed"})
     }
 })

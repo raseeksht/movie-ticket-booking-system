@@ -13,11 +13,11 @@ router.post("/",async (req,resp)=>{
     try{
         const passhash = crypto.createHash("sha256")
         passhash.update(password)
-        const user = await userLoginModel.countDocuments({username,password:passhash.digest("hex"),usertype})
+        const user = await userLoginModel.findOne({username,password:passhash.digest("hex"),usertype})
 
         // checks if username and hashedpassword exists in database and takes action accordingly
         if (user){
-            jwt.sign({username,usertype},process.env.MYSECRETKEY,(err,token)=>{
+            jwt.sign({username,usertype,uid:user._id},process.env.MYSECRETKEY,(err,token)=>{
                 if (err){
                     console.log("jwt error",err)
                     resp.json({status:"failed",message:"login failed"})
