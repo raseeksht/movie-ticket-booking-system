@@ -24,7 +24,7 @@ router.post("/",async (req,resp)=>{
         jwt.sign({username,usertype},process.env.MYSECRETKEY,(err,token)=>{
             if (err){
                 console.log("jwt error",err)
-                resp.json({status:"failed",message:"register failed"})
+                resp.json({status:"failed",message:"register failed",err})
             }
             if (token){
                 resp.json({status:"ok",message:"register Success",token})
