@@ -13,7 +13,7 @@ if (process.env.devServer == "1"){
     // console.log("connecting to local db")
 }
 else{
-    uri = "mogodb://"
+    uri = process.env.mongoUri
 }
 console.log(uri)
 // console.log(process.env.devServer)
