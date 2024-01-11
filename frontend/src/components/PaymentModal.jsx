@@ -2,7 +2,7 @@ import React,{useContext} from 'react'
 import { Modal } from 'flowbite-react'
 import AuthContext from '../context/AuthContext'
 import customFetch from "./authfetch"
-import {apiurl} from "./apiurl"
+import {apiurl,frontEndUrl} from "./apiurl"
 
 function postesewa(path, params) {
     var form = document.createElement("form");
@@ -34,8 +34,8 @@ function PaymentModal(props) {
             tAmt: props.price,
             pid: props.movie._id + "-" + new Date().getTime(),
             scd: "EPAYTEST",
-            su: `http://192.168.1.65:3000/movie/${props.movie._id}?s=1&seats=${JSON.stringify(props.mySeats)}`,
-            fu: `http://192.168.1.65:3000/movie/${props.movie._id}?s=0`
+            su: `${frontEndUrl}/movie/${props.movie._id}?s=1&seats=${JSON.stringify(props.mySeats)}`,
+            fu: `${frontEndUrl}/movie/${props.movie._id}?s=0`
         }
         postesewa(path,params)
     }
@@ -48,8 +48,12 @@ function PaymentModal(props) {
         ).then(data=>{
             authContext.setAlert({type:"success",message:data.message})
             authContext.setOpenPaymentModal(false)
-            props.setPayment(Math.random())
+            authContext.setAnything({...authContext.anything,seatsPdf:props.mySeats})
             props.setPrice(0)
+            props.setMySeats([])
+            props.setPayment(Math.random())
+            props.setDownloadBtnHidden(0) //0->hides download ticket btn
+
             
         }).catch(err=>{
             authContext.setAlert({type:"error",message:err})

@@ -27,6 +27,7 @@ export default function CustomNavbar(props) {
 
     const logout = () =>{
       localStorage.removeItem("token")
+      localStorage.removeItem("data")
       authContext.setIsLoggedIn(false)
     }
 
@@ -47,12 +48,12 @@ export default function CustomNavbar(props) {
           }
         >
           <Dropdown.Header>
-            <span className="block text-sm">Bonnie Green</span>
-            <span className="block truncate text-sm font-medium">name@flowbite.com</span>
+            <span className="block text-sm">{authContext.userData.username }</span>
+            <span className="block truncate text-sm font-medium">{authContext.userData.email}</span>
           </Dropdown.Header>
-          <Dropdown.Item>Dashboard</Dropdown.Item>
+          <Dropdown.Item>My Tickets</Dropdown.Item>
           <Dropdown.Item>Settings</Dropdown.Item>
-          <Dropdown.Item>Earnings</Dropdown.Item>
+          {/* <Dropdown.Item>Earnings</Dropdown.Item> */}
           <Dropdown.Item><DarkThemeToggle /> Toggle Theme</Dropdown.Item>
           
           <Dropdown.Divider />

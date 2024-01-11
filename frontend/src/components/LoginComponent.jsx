@@ -17,10 +17,11 @@ export default function LoginComponent(props) {
         headers:{"Content-Type":"application/json"}
     }).then(resp=>resp.json())
     .then(data=>{
-      alert(data.status)
         if (data.status == "ok"){
             localStorage.setItem("token",data.token)
             authContext.setIsLoggedIn(true)
+            localStorage.setItem("data",JSON.stringify(data.data))
+            authContext.setUserData(data.data)
         }
         else{
             authContext.setIsLoggedIn(false)

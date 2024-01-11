@@ -7,6 +7,8 @@ import AuthContext from '../context/AuthContext'
 import { Modal } from 'flowbite-react'
 import PaymentModal from './PaymentModal'
 import ShowAlert from './Alert'
+import html2pdf from 'html2pdf.js/dist/html2pdf'
+import TicketTemplate from './TicketTemplate'
 
 
 
@@ -22,7 +24,7 @@ function Trailer(props){
         <Modal className='' show={trailerModal} position={"center"} onClose={()=>settrailerModal(false)}>
             
         <Modal.Header>{props.movie.name} | Trailer</Modal.Header>
-        <iframe className='aspect-video' src="https://www.youtube.com/embed/0DoJQ4Cov9I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        <iframe className='aspect-video' src={`https://www.youtube.com/embed/${props.movie.trailer}`} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         </Modal>
         </>
     )
@@ -42,12 +44,14 @@ export default function MovieBookingPage() {
     const [mySeats,setMySeats] = useState([])
     const [price,setPrice] = useState(0)
     const [payment,setPayment] = useState(0)
+    const [downloadBtnHidden,setDownloadBtnHidden] = useState(1)
     const [btnDisabled,setBtnDisabled] = useState(true)
     useEffect(()=>{
         fetch(`${apiurl}/movies/${movieId}`)
         .then(data=>data.json())
         .then(data=>{
             setMovie(data.movie)
+            authContext.setAnything({...authContext.anything,moviePdf:data.movie.name})
         })
         .catch(err=>console.log(err))
     },[payment])
@@ -67,7 +71,10 @@ export default function MovieBookingPage() {
             customFetch(apiurl+"/movies/bookseat/"+movieId,payload)
             .then(data=>{
                 authContext.setAlert({type:"success",message:data.message})
-                setPayment(1)              
+                setPayment(Math.random())
+                authContext.setAnything({...authContext.anything,seatsPdf:JSON.parse(seats)})
+                setDownloadBtnHidden(0) //0->hides download ticket btn
+                              
             })
             .catch(err=>console.log("error",err))
         }else if(s == '0'){
@@ -163,15 +170,29 @@ export default function MovieBookingPage() {
                             Total Price: {price}
                         </div>
                         <button onClick={handleProceedToPayment} className={`${btnDisabled? 'bg-gray-500':'bg-red-500'} rounded px-2 py-1`} disabled={btnDisabled} id="proceedToPaymentBtn">Proceed to Payment</button>
+                        {/* <button className="bg-red-500 mx-2 p-1 px-5 rounded">Download Ticket</button> */}
+
                     </div>
 
                 </div>
-        <PaymentModal movie={movie} price={price} mySeats={mySeats} setPayment={setPayment} setPrice={setPrice}/>
+                <PaymentModal 
+                    movie={movie} 
+                    price={price} 
+                    mySeats={mySeats} 
+                    setMySeats={setMySeats} 
+                    setPayment={setPayment} 
+                    setPrice={setPrice}
+                    setDownloadBtnHidden={setDownloadBtnHidden}    
+                />
                 
             </div>
-            
+
+
         
         }
+        <TicketTemplate 
+            downloadBtnHidden={downloadBtnHidden}
+        />
     </>
   )
 }

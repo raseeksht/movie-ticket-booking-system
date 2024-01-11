@@ -13,6 +13,8 @@ export default function App() {
   const [openPaymentModal, setOpenPaymentModal] = useState(false);
   const [alert,setAlert] = useState(null)
   const [isLoggedIn,setIsLoggedIn] = useState(Boolean(localStorage.getItem("token")))
+  const [userData,setUserData] = useState(JSON.parse(localStorage.getItem("data")) || null)
+  const [anything,setAnything] = useState({})
 
 
   return (
@@ -23,7 +25,9 @@ export default function App() {
       isLoggedIn,
       setIsLoggedIn,
       openPaymentModal,setOpenPaymentModal,
-      alert,setAlert
+      alert,setAlert,
+      userData,setUserData,
+      anything,setAnything
       }}>
     <Router>
       <Routes>
