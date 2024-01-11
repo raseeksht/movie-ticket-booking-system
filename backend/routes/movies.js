@@ -102,7 +102,7 @@ router.post("/bookseat/:movieId",verifyUser,async (req,resp)=>{
 
             const movie = await movieModel.findOne({_id:movieId})
             const result = bookTicket(movieId,bookedSeats)
-            resp.json({ status: "ok", message: "Seats booked successfully" });
+            resp.json({ status: "ok", message: "Seats booked successfully",bookedSeats });
 
         }else{
             console.log("payment not validate")
@@ -120,7 +120,7 @@ router.post("/bookseatphysical/:movieId",verifyUser,(req,resp)=>{
     const {bookedSeats} = req.body
     try{
         const result = bookTicket(movieId,bookedSeats)
-        resp.json({ status: "ok", message: "Seats booked successfully" });
+        resp.json({ status: "ok", message: "Seats booked successfully",bookedSeats });
     }catch(err){
         console.log(err)
         resp.json({"status":"failed","message":"failed"})

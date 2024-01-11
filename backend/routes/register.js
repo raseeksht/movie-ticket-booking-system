@@ -26,7 +26,10 @@ router.post("/",async (req,resp)=>{
                 console.log("jwt error",err)
                 resp.json({status:"failed",message:"register failed",err})
             }else if (token){
-                resp.json({status:"ok",message:"register Success",token})
+                usrdata = {
+                    username,usertype,email,uid:user._id
+                }
+                resp.json({status:"ok",message:"register Success",token,data:usrdata})
             } else {
                 console.log("Unexpected error: both err and token are undefined");
                 resp.json({ status: "failed", message: "Unexpected error during registration" });
@@ -34,7 +37,7 @@ router.post("/",async (req,resp)=>{
         })
         
     }catch(err){
-        resp.json({status:"failed",message:"login failed"})
+        resp.json({status:"failed",message:"register failed"})
     }
 })
 

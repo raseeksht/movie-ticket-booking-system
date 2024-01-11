@@ -23,7 +23,11 @@ router.post("/",async (req,resp)=>{
                     resp.json({status:"failed",message:"login failed"})
                 }
                 if (token){
-                    resp.json({status:"ok",message:"login Success",token})
+                    usrdata = {
+                        username,usertype,uid:user._id,
+                        email:user.email
+                    }
+                    resp.json({status:"ok",message:"login Success",token,data:usrdata})
                 }
             })
         }else{
