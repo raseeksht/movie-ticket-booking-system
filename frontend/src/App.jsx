@@ -7,13 +7,14 @@ import {
 } from "react-router-dom"
 import MovieBookingPage from './components/MovieBookingPage'
 import AuthContext from './context/AuthContext'
+import Mytickets from './components/Mytickets'
 
 export default function App() {
   const [openLoginModal, setOpenLoginModal] = useState(false);
   const [openPaymentModal, setOpenPaymentModal] = useState(false);
   const [alert,setAlert] = useState(null)
   const [isLoggedIn,setIsLoggedIn] = useState(Boolean(localStorage.getItem("token")))
-  const [userData,setUserData] = useState(JSON.parse(localStorage.getItem("data")) || null)
+  const [userData,setUserData] = useState(JSON.parse(localStorage.getItem("data")) || {})
   const [anything,setAnything] = useState({})
 
 
@@ -34,6 +35,7 @@ export default function App() {
         <Route path="/movie/:movieId" Component={MovieBookingPage}></Route>
         <Route path="/" Component={Home}></Route>
         <Route path="/home" Component={Home}></Route>
+        <Route path='/tickets' Component={Mytickets}></Route>
 
 
       </Routes>

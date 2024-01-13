@@ -1,5 +1,5 @@
 
-import { Avatar, Dropdown, Navbar,DarkThemeToggle } from 'flowbite-react';
+import { Avatar, Dropdown, Navbar,DarkThemeToggle,NavbarLink } from 'flowbite-react';
 import { useEffect, useState,useContext } from 'react';
 import LoginComponent from './LoginComponent';
 import AuthContext from '../context/AuthContext';
@@ -51,9 +51,10 @@ export default function CustomNavbar(props) {
             <span className="block text-sm">{authContext.userData.username }</span>
             <span className="block truncate text-sm font-medium">{authContext.userData.email}</span>
           </Dropdown.Header>
-          <Dropdown.Item>My Tickets</Dropdown.Item>
+          <Dropdown.Item as={Link} to="/tickets">
+            My tickets
+          </Dropdown.Item>
           <Dropdown.Item>Settings</Dropdown.Item>
-          {/* <Dropdown.Item>Earnings</Dropdown.Item> */}
           <Dropdown.Item><DarkThemeToggle /> Toggle Theme</Dropdown.Item>
           
           <Dropdown.Divider />
@@ -63,10 +64,18 @@ export default function CustomNavbar(props) {
         <Navbar.Toggle />
       </div>
       <Navbar.Collapse>
-        <CustomLink href="/" >Home</CustomLink>
-        <CustomLink href="/about">About Us</CustomLink>
-        <CustomLink href="/contact" >Contact</CustomLink>
-        <CustomLink href="/profile" >Profile</CustomLink>
+        <NavbarLink>
+          <Link to="/">Home</Link>
+        </NavbarLink>
+        <NavbarLink>
+          <Link to="/about">About Us</Link>
+        </NavbarLink>
+        <NavbarLink>
+          <Link to="/about">Contact Us</Link>
+        </NavbarLink>
+        <NavbarLink>
+          <Link to="/about">Profile</Link>
+        </NavbarLink>
       </Navbar.Collapse>
     </Navbar>
   );
