@@ -1,6 +1,6 @@
 
 const jwt = require("jsonwebtoken")
-const {transactionModel} = require("../models")
+const {transactionModel,userSeatsModel,movieModel} = require("../models")
 
 function checkPayload(payload){
     // return fail json if key is missing else null
@@ -13,10 +13,7 @@ function checkPayload(payload){
 
 
 async function recordTxn(headers,pid,rid,scd,amt){
-    console.log("i am called")
-    console.log(headers)
-    authToken = headers.authorization.split(" ")[1]
-    const tokendata = jwt.decode(authToken,process.env.MYSECRETKEY)
+    const tokendata = getDecodedToken(headers)
     const username = tokendata.username
     try{
         const res = await transactionModel.create({
@@ -28,9 +25,49 @@ async function recordTxn(headers,pid,rid,scd,amt){
     }catch(err){
         return false
     }
-
-
 }
 
+function bookTicket(headers,movieId,bookedSeats){
+    const tokendata = getDecodedToken(headers)
 
-module.exports = {checkPayload,recordTxn}
+    return new Promise(async (resolve,reject)=>{
+        try{
+            const movie = await movieModel.findOne({_id:movieId})
+            for (seat of bookedSeats){
+                const [x,y] = seat.split("-")
+                movie.seats[parseInt(x)][parseInt(y)] = 1
+            }
+            const result = await movieModel.findOneAndUpdate(
+                { _id: movieId },
+                { $set: { seats: movie.seats} },
+                { new: true }
+            );
+            await userSeatsModel.create({
+                user_ref:tokendata.uid,
+                movie_ref:movieId,
+                seats: JSON.stringify(bookedSeats),
+                date:"2024/2/23",
+                time:"1:30 PM",
+                price: 250 * bookedSeats.length
+            })
+
+            resolve(result)
+        }catch(err){
+            reject(err)
+        }
+
+    })
+    
+}
+
+function getDecodedToken(headers){
+    try{
+        authToken = headers.authorization.split(" ")[1]
+        const tokendata = jwt.decode(authToken,process.env.MYSECRETKEY)
+        return tokendata
+    }catch(err){
+        return {}
+    }
+}
+
+module.exports = {checkPayload,recordTxn,bookTicket,getDecodedToken}

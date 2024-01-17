@@ -19,12 +19,17 @@ const movieSchema = new mongoose.Schema({
     seats: mongoose.Schema.Types.Array
 })
 
-// const movieSeatsSchema = new mongoose.Schema({
-//     movie_ref:mongoose.Schema.Types.ObjectId,
-//     date:String,
-//     time:String,
-//     arrangement: mongoose.Schema.Types.Array
-// })
+const userSeatsSchema = new mongoose.Schema({
+    movie_ref:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"movie"
+    },
+    user_ref: mongoose.Schema.Types.ObjectId,
+    date:String,
+    time:String,
+    seats:String,
+    price:Number
+})
 
 const transactionSchema = new mongoose.Schema({
     user_ref: mongoose.Schema.Types.ObjectId,
@@ -36,7 +41,7 @@ const transactionSchema = new mongoose.Schema({
 
 const userLoginModel = new mongoose.model("user",userLoginSchema)
 const movieModel = new mongoose.model("movie",movieSchema)
-// const movieSeatsModel = new mongoose.model("movieseat",movieSeatsSchema)
+const userSeatsModel = new mongoose.model("user_seats",userSeatsSchema)
 const transactionModel = new mongoose.model("txn",transactionSchema)
 
-module.exports = {userLoginModel,movieModel,transactionModel}
+module.exports = {userLoginModel,movieModel,transactionModel,userSeatsModel}

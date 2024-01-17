@@ -10,5 +10,6 @@ router.get("/",(req,resp)=>{
 router.use("/login",require("./login"))
 router.use("/register",require("./register"))
 router.use("/movies",require("./movies"))
+router.use("/tickets",require("./tickets"))
 
 module.exports = router

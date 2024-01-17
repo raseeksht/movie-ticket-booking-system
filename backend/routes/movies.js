@@ -2,7 +2,7 @@ const express = require("express")
 const {movieModel} = require("../models")
 const router = express.Router()
 const {verifyUser,isAdmin} = require("../middlewares/verifyuser")
-const {checkPayload,recordTxn} = require("./utils")
+const {checkPayload,recordTxn,bookTicket} = require("./utils")
 
 const axios = require("axios")
 
@@ -58,28 +58,6 @@ router.put("/:movieId",isAdmin,async (req,resp)=>{
     }
 })
 
-const bookTicket = (movieId,bookedSeats)=>{
-    return new Promise(async (resolve,reject)=>{
-        try{
-            const movie = await movieModel.findOne({_id:movieId})
-            for (seat of bookedSeats){
-                const [x,y] = seat.split("-")
-                movie.seats[parseInt(x)][parseInt(y)] = 1
-            }
-            const result = await movieModel.findOneAndUpdate(
-                { _id: movieId },
-                { $set: { seats: movie.seats} },
-                { new: true }
-            );
-            resolve(result)
-        }catch(err){
-            reject(err)
-        }
-
-    })
-    
-}
-
 
 router.post("/bookseat/:movieId",verifyUser,async (req,resp)=>{
     const movieId = req.params.movieId
@@ -101,7 +79,7 @@ router.post("/bookseat/:movieId",verifyUser,async (req,resp)=>{
             const txn = await recordTxn(req.headers,oid,refId,scd,amt)
 
             const movie = await movieModel.findOne({_id:movieId})
-            const result = bookTicket(movieId,bookedSeats)
+            const result = bookTicket(req.headers,movieId,bookedSeats)
             resp.json({ status: "ok", message: "Seats booked successfully",bookedSeats });
 
         }else{
@@ -119,7 +97,7 @@ router.post("/bookseatphysical/:movieId",verifyUser,(req,resp)=>{
     const movieId = req.params.movieId
     const {bookedSeats} = req.body
     try{
-        const result = bookTicket(movieId,bookedSeats)
+        const result = bookTicket(req.headers,movieId,bookedSeats)
         resp.json({ status: "ok", message: "Seats booked successfully",bookedSeats });
     }catch(err){
         console.log(err)
