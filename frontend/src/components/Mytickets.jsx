@@ -1,66 +1,68 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import CustomNavbar from './CustomNavbar'
 import { Table } from 'flowbite-react'
+import {apiurl} from './apiurl'
+import customFetch from "./authfetch"
+import { useState } from 'react'
+
 
 
 
 function Mytickets() {
+  const [myTickets,setMyTickets] = useState(null)
+
+  useEffect(()=>{
+    const token = localStorage.getItem("token")
+    fetch(apiurl+"/tickets",{
+      headers:{Authorization:`Bearer ${token}`}
+    })
+    .then(resp=>resp.json())
+    .then(data=>{
+      console.log(data)
+      setMyTickets(data.data)
+    })
+    .catch(err=>console.log(err))
+    
+  },[])
+
   return (
     <>
         <CustomNavbar />
-        <div className="container mx-10 border-solid border-2">
+        <div className="container md:px-10 px-3 w-[98%] md:overflow-auto overflow-x-scroll">
             <h2 className='text-2xl dark:text-white'>My Tickets</h2>
             <div className=''>
-            <Table className='w-full'>
+            <Table className=''>
         <Table.Head>
-          <Table.HeadCell>Product name</Table.HeadCell>
-          <Table.HeadCell>Color</Table.HeadCell>
-          <Table.HeadCell>Category</Table.HeadCell>
+          <Table.HeadCell>Movie</Table.HeadCell>
+          <Table.HeadCell>Date/Time</Table.HeadCell>
+          <Table.HeadCell>Seats</Table.HeadCell>
           <Table.HeadCell>Price</Table.HeadCell>
-          <Table.HeadCell>
-            <span className="sr-only">Edit</span>
-          </Table.HeadCell>
+          <Table.HeadCell>Ticket</Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">
+          {
+            myTickets==null?<h1 className='dark:text-white'>loading</h1> : 
+          myTickets.map(ticket=>(
+
+          
           <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
             <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-              {'Apple MacBook Pro 17"'}
+              {ticket.movie_ref.name}
             </Table.Cell>
-            <Table.Cell>Sliver</Table.Cell>
-            <Table.Cell>Laptop</Table.Cell>
-            <Table.Cell>$2999</Table.Cell>
+            <Table.Cell>{ticket.date + " " + ticket.time}</Table.Cell>
+            <Table.Cell>{ticket.seats}</Table.Cell>
+            <Table.Cell>{ticket.price}</Table.Cell>
             <Table.Cell>
               <a href="#" className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">
-                Edit
+                Download
               </a>
             </Table.Cell>
           </Table.Row>
-          <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-              Microsoft Surface Pro
-            </Table.Cell>
-            <Table.Cell>White</Table.Cell>
-            <Table.Cell>Laptop PC</Table.Cell>
-            <Table.Cell>$1999</Table.Cell>
-            <Table.Cell>
-              <a href="#" className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">
-                Edit
-              </a>
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">Magic Mouse 2</Table.Cell>
-            <Table.Cell>Black</Table.Cell>
-            <Table.Cell>Accessories</Table.Cell>
-            <Table.Cell>$99</Table.Cell>
-            <Table.Cell>
-              <a href="#" className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">
-                Edit
-              </a>
-            </Table.Cell>
-          </Table.Row>
+          ))
+          }    
         </Table.Body>
       </Table>
+      
       </div>
         </div>
     

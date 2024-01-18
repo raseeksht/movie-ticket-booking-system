@@ -1,4 +1,4 @@
-const customFetch = (url, payload, customHeader = {}) => {
+const customFetch = (url, payload, customHeader = {},method="POST") => {
     return new Promise((resolve, reject) => {
         const token = localStorage.getItem("token");
         console.log(token)
@@ -16,7 +16,7 @@ const customFetch = (url, payload, customHeader = {}) => {
         };
 
         fetch(url, {
-            method: "POST",
+            method: method,
             body: JSON.stringify(payload),
             headers: headers
         })
