@@ -20,7 +20,6 @@ async function recordTxn(headers,pid,rid,scd,amt){
             user_ref:tokendata.uid,
             pid,rid,scd,amt
         })
-        console.log(res)
         return true
     }catch(err){
         return false
@@ -46,8 +45,8 @@ function bookTicket(headers,movieId,bookedSeats){
                 user_ref:tokendata.uid,
                 movie_ref:movieId,
                 seats: JSON.stringify(bookedSeats),
-                date:"2024/2/23",
-                time:"1:30 PM",
+                date: movie.releaseDate,
+                time: movie.showTime,
                 price: 250 * bookedSeats.length
             })
 

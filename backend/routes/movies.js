@@ -16,8 +16,8 @@ router.get("/",async (req,resp)=>{
 })
 
 router.post("/",async (req,resp)=>{
-    const {name,description,releaseDate,thumbnail,length,rating,trailer} = req.body
-    const isBad = checkPayload({name,description,releaseDate,thumbnail,length,rating,trailer})
+    const {name,description,releaseDate,thumbnail,length,rating,trailer,showTime} = req.body
+    const isBad = checkPayload({name,description,releaseDate,thumbnail,length,rating,trailer,showTime})
     if (isBad){
         return resp.json(isBad)
     }
@@ -26,7 +26,7 @@ router.post("/",async (req,resp)=>{
         // suppose the hall has 3 rows and six columns
         const row=10,column =9;
         const seats = Array.from({length:row},()=> new Array(column).fill(0))
-        const movie = await movieModel.create({name,description,releaseDate,thumbnail,seats})
+        const movie = await movieModel.create({name,description,releaseDate,thumbnail,seats,showTime,length,rating,trailer})
         resp.json({status:'ok',message:"movie added successfully",movie})
     }catch(err){
         resp.json({status:'failed',message:"error adding movie",err})

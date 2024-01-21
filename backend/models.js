@@ -16,6 +16,7 @@ const movieSchema = new mongoose.Schema({
     length:String,
     rating:String,
     trailer:String,
+    showTime:String,
     seats: mongoose.Schema.Types.Array
 })
 
