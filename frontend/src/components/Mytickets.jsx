@@ -2,8 +2,8 @@ import React, { useEffect } from 'react'
 import CustomNavbar from './CustomNavbar'
 import { Table } from 'flowbite-react'
 import {apiurl} from './apiurl'
-import customFetch from "./authfetch"
 import { useState } from 'react'
+import handleDownloadTicket,{seatsEncoder} from './TicketTemplate'
 
 
 
@@ -42,20 +42,29 @@ function Mytickets() {
         <Table.Body className="divide-y">
           {
             myTickets==null?<h1 className='dark:text-white'>loading</h1> : 
-          myTickets.map(ticket=>(
+          myTickets.map((ticket,index)=>(
+            
 
           
-          <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+          <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800" key={index}>
             <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
               {ticket.movie_ref.name}
             </Table.Cell>
-            <Table.Cell>{ticket.date + " " + ticket.time}</Table.Cell>
-            <Table.Cell>{ticket.seats}</Table.Cell>
+            <Table.Cell>{ticket.date + " " + ticket.movie_ref.showTime || "none"}</Table.Cell>
+            <Table.Cell>{seatsEncoder(JSON.parse(ticket.seats)).join(", ")}</Table.Cell>
             <Table.Cell>{ticket.price}</Table.Cell>
             <Table.Cell>
-              <a href="#" className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">
+              <button 
+              onClick={()=>handleDownloadTicket({
+                movie:ticket.movie_ref.name,
+                date:ticket.date,
+                time:ticket.time,
+                location: ticket.location || "ATB Building",
+                seats: JSON.parse(ticket.seats)
+              })}             
+              className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">
                 Download
-              </a>
+              </button>
             </Table.Cell>
           </Table.Row>
           ))
@@ -65,7 +74,7 @@ function Mytickets() {
       
       </div>
         </div>
-    
+          
     </>
   )
 }

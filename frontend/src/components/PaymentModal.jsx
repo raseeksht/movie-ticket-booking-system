@@ -3,6 +3,7 @@ import { Modal } from 'flowbite-react'
 import AuthContext from '../context/AuthContext'
 import customFetch from "./authfetch"
 import {apiurl,frontEndUrl} from "./apiurl"
+import handleDownloadTicket from './TicketTemplate'
 
 function postesewa(path, params) {
     var form = document.createElement("form");
@@ -52,7 +53,13 @@ function PaymentModal(props) {
             props.setPrice(0)
             props.setMySeats([])
             props.setPayment(Math.random())
-            props.setDownloadBtnHidden(0) //0->hides download ticket btn
+            handleDownloadTicket({
+                movie:props.movie.name,
+                date:props.movie.releaseDate,
+                time:props.movie.showTime,
+                location:props.movie.location || "ATB Building",
+                seats:props.mySeats
+            })
 
             
         }).catch(err=>{

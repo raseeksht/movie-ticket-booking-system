@@ -1,52 +1,22 @@
-import React,{useContext, useState} from 'react'
 import QRCode from 'react-qr-code'
-import AuthContext from '../context/AuthContext'
 import html2pdf from 'html2pdf.js'
-import { useEffect } from 'react'
+import ReactDOMServer from 'react-dom/server';
 
-function TicketTemplate(props) {
-    const [seats,setSeats] = useState(null)
-    const authContext = useContext(AuthContext)
-
-    useEffect(()=>{
-        if (authContext.anything.seatsPdf){
-            const seats1 = authContext.anything.seatsPdf.map(seat=>{
-                let col = parseInt(seat.split("-")[1])
-                let seatId = String.fromCharCode(65 + parseInt(seat.split("-")[0])) + col
-                return seatId
-            })
-            console.log(seats1)
-            setSeats(seats1)
-
-        }
-    },[authContext.anything.seatsPdf])
-
-    const download = () =>{
-        const options = {
-            margin: 2,
-            filename: 'output.pdf',
-            image: { type: 'jpeg', quality: 1 },
-            html2canvas: { scale: 1 },
-            jsPDF: { unit: 'mm', format: [90, 150], orientation: 'portrait' }
-        };
-        const div = document.getElementById("container")
-        html2pdf(div,options)
-    }
-  return (
-    <>
-    <div className='text-white hidden'>
-        <div className="container p-5 w-[300px]" id="container">
-            <h1 className="text-2xl">{authContext.anything.moviePdf}</h1>
+function ticketMaker({movie,date,time,location,seats}){
+    return (
+        <>
+        <div className="p-5 w-[300px]" id="container">
+            <h1 className="text-2xl">{movie}</h1>
             <div className="flex place-content-between">
                 <div>
-                    <span className="mdi mdi-calendar-range"> 2020/23/21</span>
+                    <span className="mdi mdi-calendar-range"> {date}</span>
                 </div>
                 <div>
-                    <span className="mdi mdi-clock-time-eight"></span> 1:30
+                    <span className="mdi mdi-clock-time-eight"></span> {time}
                 </div>
             </div>
             <div className="">
-                <span className="mdi mdi-map"></span> Location
+                <span className="mdi mdi-map"></span> {location}
 
             </div>
             <hr className="my-5" />
@@ -70,14 +40,36 @@ function TicketTemplate(props) {
             </div>
 
             <div id="qrcode" className="flex place-content-center mt-5">
-                <QRCode value={JSON.stringify({movie:authContext.anything.moviePdf,seats:seats})}></QRCode>
+                <QRCode value={JSON.stringify({movie,seats})}></QRCode>
             </div>
 
         </div>
-    </div>
-    <button onClick={download} className={`bg-red-500 mx-2 p-1 px-5 rounded ${props.downloadBtnHidden? 'hidden' :''}`}>download ticket</button>
-    </>
-  )
+        </>
+    )
 }
 
-export default TicketTemplate
+export function seatsEncoder(seats){
+    // unencoded seats => ["0-1","1-1"...]
+    // encode seats =>["A1","B1"....]
+    const encodedSeats = seats.map(seat=>{
+        let col = parseInt(seat.split("-")[1])
+        let seatId = String.fromCharCode(65 + parseInt(seat.split("-")[0])) + col
+        return seatId
+    })
+    return encodedSeats
+}
+
+const handleDownloadTicket = ({movie,date,time,location, seats})=>{
+    console.log("downloading")
+    const options = {
+        margin: 2,
+        filename: `${movie}_ticket_${date}.pdf`,
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { scale: 1 },
+        jsPDF: { unit: 'mm', format: [90, 150], orientation: 'portrait' }
+    };
+    const ticket = ticketMaker({movie,date,time,location, seats:seatsEncoder(seats)})
+    html2pdf(ReactDOMServer.renderToString(ticket),options)
+}
+
+export default handleDownloadTicket

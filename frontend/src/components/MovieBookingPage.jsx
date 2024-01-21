@@ -7,8 +7,8 @@ import AuthContext from '../context/AuthContext'
 import { Modal } from 'flowbite-react'
 import PaymentModal from './PaymentModal'
 import ShowAlert from './Alert'
-import html2pdf from 'html2pdf.js/dist/html2pdf'
-import TicketTemplate from './TicketTemplate'
+
+import handleDownloadTicket from './TicketTemplate'
 
 
 
@@ -70,10 +70,10 @@ export default function MovieBookingPage() {
             }
             customFetch(apiurl+"/movies/bookseat/"+movieId,payload)
             .then(data=>{
-                authContext.setAlert({type:"success",message:data.message})
+                authContext.setAlert({type:"success",message:data.message+" Download Ticket Available ay myticket section"})
                 setPayment(Math.random())
                 authContext.setAnything({...authContext.anything,seatsPdf:JSON.parse(seats)})
-                setDownloadBtnHidden(0) //0->hides download ticket btn
+                
                               
             })
             .catch(err=>console.log("error",err))
@@ -181,8 +181,7 @@ export default function MovieBookingPage() {
                     mySeats={mySeats} 
                     setMySeats={setMySeats} 
                     setPayment={setPayment} 
-                    setPrice={setPrice}
-                    setDownloadBtnHidden={setDownloadBtnHidden}    
+                    setPrice={setPrice} 
                 />
                 
             </div>
@@ -190,9 +189,7 @@ export default function MovieBookingPage() {
 
         
         }
-        <TicketTemplate 
-            downloadBtnHidden={downloadBtnHidden}
-        />
+
     </>
   )
 }
