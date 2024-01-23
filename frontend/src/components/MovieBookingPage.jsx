@@ -6,8 +6,6 @@ import customFetch from './authfetch'
 import AuthContext from '../context/AuthContext'
 import { Modal } from 'flowbite-react'
 import PaymentModal from './PaymentModal'
-import ShowAlert from './Alert'
-
 import handleDownloadTicket from './TicketTemplate'
 
 
@@ -123,8 +121,8 @@ export default function MovieBookingPage() {
 
   return (
     <>
-        <CustomNavbar />
-        <ShowAlert/>
+        {/* <CustomNavbar /> */}
+        
         {movie == null? <h1>Loading</h1>:
             <div className="w-full container md:mx-16 md:mt-10 mx-5 ">
                 <div className='md:flex'>

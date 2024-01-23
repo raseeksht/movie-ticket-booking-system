@@ -8,6 +8,8 @@ import {
 import MovieBookingPage from './components/MovieBookingPage'
 import AuthContext from './context/AuthContext'
 import Mytickets from './components/Mytickets'
+import Dashboard from './components/admin-panel/Dashboard'
+import CustomNavbar from './components/CustomNavbar'
 
 export default function App() {
   const [openLoginModal, setOpenLoginModal] = useState(false);
@@ -31,11 +33,13 @@ export default function App() {
       anything,setAnything
       }}>
     <Router>
+        <CustomNavbar />
       <Routes>
         <Route path="/movie/:movieId" Component={MovieBookingPage}></Route>
         <Route path="/" Component={Home}></Route>
         <Route path="/home" Component={Home}></Route>
         <Route path='/tickets' Component={Mytickets}></Route>
+        <Route path='/admin-panel' Component={Dashboard}></Route>
 
 
       </Routes>

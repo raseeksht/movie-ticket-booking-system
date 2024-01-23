@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import CustomNavbar from './CustomNavbar'
 import {apiurl} from './apiurl'
 import MovieCard from './MovieCard'
 
@@ -15,7 +14,6 @@ export default function Home() {
 
   return (
     <>
-        <CustomNavbar /> 
         <h1>hello{key}</h1>
         
         <div className="md:mx-20">

@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import AuthContext from '../context/AuthContext';
 import { useEffect } from 'react';
 
-function ShowAlert(props) {
+function ShowAlert() {
     const authContext = useContext(AuthContext)
     useEffect(() => {
       setTimeout(()=>{

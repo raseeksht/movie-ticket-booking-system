@@ -4,17 +4,11 @@ import { useEffect, useState,useContext } from 'react';
 import LoginComponent from './LoginComponent';
 import AuthContext from '../context/AuthContext';
 import {Link} from "react-router-dom"
+import ShowAlert from './Alert';
 
-function CustomLink(props){
-  return (
-    <Link to={props.href} className='block py-2 pr-4 pl-3 md:p-0 border-b border-gray-100  text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white md:border-0 md:hover:bg-transparent md:hover:text-cyan-700 md:dark:hover:bg-transparent md:dark:hover:text-white'>{props.children}</Link>
 
-  )
-
-}
 
 export default function CustomNavbar(props) {
-    // const [isLoggedIn,setIsLoggedIn] = useState(Boolean(localStorage.getItem("token")))
     const authContext = useContext(AuthContext)
 
     useEffect(()=>{
@@ -32,7 +26,8 @@ export default function CustomNavbar(props) {
     }
 
   return (
-    <Navbar fluid>
+    <>
+    <Navbar fluid className='dark:bg-black border-b-[1px] border-solid'>
       <Navbar.Brand href="https://flowbite-react.com">
         <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Awesome Ticket Booker</span>
       </Navbar.Brand>
@@ -51,6 +46,9 @@ export default function CustomNavbar(props) {
             <span className="block text-sm">{authContext.userData.username }</span>
             <span className="block truncate text-sm font-medium">{authContext.userData.email}</span>
           </Dropdown.Header>
+          <Dropdown.Item as={Link} to="/admin-panel">
+            Dashboard
+          </Dropdown.Item>
           <Dropdown.Item as={Link} to="/tickets">
             My tickets
           </Dropdown.Item>
@@ -78,5 +76,7 @@ export default function CustomNavbar(props) {
         </NavbarLink>
       </Navbar.Collapse>
     </Navbar>
+    <ShowAlert/>
+    </>
   );
 }
