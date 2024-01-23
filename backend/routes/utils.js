@@ -11,6 +11,16 @@ function checkPayload(payload){
     }
 }
 
+function getVideoId(url1){
+    const url = new URL(url1)    
+    if (url.hostname == "youtu.be"){
+        return url.pathname.slice(1,)
+    }else if(url.hostname=="www.youtube.com"){
+        return url.searchParams.get('v')
+    }else{
+        return "Rxv165h1vws"
+    }
+}
 
 async function recordTxn(headers,pid,rid,scd,amt){
     const tokendata = getDecodedToken(headers)
@@ -69,4 +79,4 @@ function getDecodedToken(headers){
     }
 }
 
-module.exports = {checkPayload,recordTxn,bookTicket,getDecodedToken}
+module.exports = {checkPayload,recordTxn,bookTicket,getDecodedToken,getVideoId}

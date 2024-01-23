@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken")
+const {getDecodedToken} = require("../routes/utils")
 
 function verifyUser(req,resp,next){
     const authToken = req.headers.authorization
@@ -24,8 +25,7 @@ function isAdmin(req,resp,next){
             if (err){
                 resp.status(401).json({"message":"token invalid",err})
             }else{
-                const decoded = jwt.decode(authToken.split(" ")[1],process.env.MYSECRETKEY)
-                console.log("decoded",decoded)
+                const decoded = getDecodedToken(req.headers)
                 if (decoded.usertype == "admin"){
                     next()  //continue if the token if correct and is admin
                 }else{
