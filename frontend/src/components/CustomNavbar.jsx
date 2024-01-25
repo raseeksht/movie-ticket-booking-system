@@ -5,15 +5,27 @@ import LoginComponent from './LoginComponent';
 import AuthContext from '../context/AuthContext';
 import {Link} from "react-router-dom"
 import ShowAlert from './Alert';
+import { apiurl } from './apiurl';
 
 
 
 export default function CustomNavbar(props) {
     const authContext = useContext(AuthContext)
-
     useEffect(()=>{
-        if (localStorage.getItem("token")){
-          authContext.setIsLoggedIn(true)
+      const token = localStorage.getItem("token") 
+        if (token){
+          fetch(apiurl+"/login/validatelogin",{
+            method:"GET",
+            headers:{Authorization:"Bearer "+token}
+          })
+          .then(resp=>resp.json())
+          .then(data=>{
+            if (data.status == "ok"){
+              authContext.setIsLoggedIn(true)
+              localStorage.setItem("data",JSON.stringify(data.data))
+            }
+          })
+          .catch(err=>console.log("error: Invalid login token",err))
         }
     },[])
 

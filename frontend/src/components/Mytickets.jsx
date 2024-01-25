@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import CustomNavbar from './CustomNavbar'
 import { Table } from 'flowbite-react'
 import {apiurl} from './apiurl'
 import { useState } from 'react'
@@ -27,7 +26,6 @@ function Mytickets() {
 
   return (
     <>
-        <CustomNavbar />
         <div className="container md:px-10 px-3 w-[98%] md:overflow-auto overflow-x-scroll">
             <h2 className='text-2xl dark:text-white'>My Tickets</h2>
             <div className=''>

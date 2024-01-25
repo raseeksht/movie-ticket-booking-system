@@ -3,6 +3,8 @@ import {useNavigate, useSearchParams} from "react-router-dom"
 import AddNewMovie from './AddNewMovie'
 import SideNav from './SideNav'
 import NavContext from '../../context/NavContext'
+import AddBranch from './AddBranch'
+import AddHall from './AddHall'
 
 function Dashboard() {
   const navigate = useNavigate()
@@ -26,12 +28,14 @@ function Dashboard() {
     <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
 
     <div className='md:flex'>
-      <div>
+      <div className='md:w-1/6'>
         <SideNav />
       </div>
       <hr className="my-5 border-slate-500" />
-      <div>
+      <div className='md:w-5/6'>
         {currentSection == "addmovie" ? <AddNewMovie /> :""}
+        {currentSection == "addbranch" ? <AddBranch /> :""}
+        {currentSection == "addhall" ? <AddHall /> :""}
       </div>
       
     </div>

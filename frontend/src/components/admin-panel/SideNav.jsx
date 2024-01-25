@@ -29,6 +29,13 @@ function SideNav() {
         >
             Add Halls
         </ListGroup.Item>
+        <ListGroup.Item
+        href="#addbranch"
+        active={activeKey == "addbranch"}
+        onClick={()=>handleSideNavClick("addbranch")}
+        >
+            Add Branches
+        </ListGroup.Item>
         <ListGroup.Item href="#">Stats</ListGroup.Item>
         <ListGroup.Item href="#">Tickets</ListGroup.Item>
       </ListGroup>
