@@ -40,9 +40,43 @@ const transactionSchema = new mongoose.Schema({
     amt:String
 })
 
+const audiSchema = new mongoose.Schema({
+    name:String,
+    location:String,
+    seats: mongoose.Schema.Types.Array
+})
+
+const movieTimingSchema = new mongoose.Schema({
+    movie_ref: mongoose.Schema.Types.ObjectId,
+    date:String,
+    time:String,
+    location:String,
+    audi_ref:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"audi"
+    }
+})
+
+const branchSchema = new mongoose.Schema({
+    location:String,
+    contact:String
+})
+
+
 const userLoginModel = new mongoose.model("user",userLoginSchema)
 const movieModel = new mongoose.model("movie",movieSchema)
 const userSeatsModel = new mongoose.model("user_seats",userSeatsSchema)
 const transactionModel = new mongoose.model("txn",transactionSchema)
+const audiModel = new mongoose.model("audi",audiSchema)
+const movieTimingModel = new mongoose.model("movie_timing",movieTimingSchema)
+const branchModel = new mongoose.model("our_branch",branchSchema)
 
-module.exports = {userLoginModel,movieModel,transactionModel,userSeatsModel}
+module.exports = {
+    userLoginModel,
+    movieModel,
+    transactionModel,
+    userSeatsModel,
+    audiModel,
+    movieTimingModel,
+    branchModel
+}

@@ -21,7 +21,7 @@ router.post("/",async (req,resp)=>{
         const passhash = crypto.createHash("sha256")
         passhash.update(password)
         const user = await userLoginModel.create({username,password:passhash.digest("hex"),usertype,email})
-        jwt.sign({username,usertype},process.env.MYSECRETKEY,(err,token)=>{
+        jwt.sign({username,usertype,uid:user._id,email:user.email},process.env.MYSECRETKEY,(err,token)=>{
             if (err){
                 console.log("jwt error",err)
                 resp.json({status:"failed",message:"register failed",err})
