@@ -17,6 +17,8 @@ export default function App() {
   const [alert,setAlert] = useState(null)
   const [isLoggedIn,setIsLoggedIn] = useState(Boolean(localStorage.getItem("token")))
   const [userData,setUserData] = useState(JSON.parse(localStorage.getItem("data")) || {})
+  const [existingBranchData,setExistingBranchData] = useState(null)
+
   const [anything,setAnything] = useState({})
 
 
@@ -30,7 +32,8 @@ export default function App() {
       openPaymentModal,setOpenPaymentModal,
       alert,setAlert,
       userData,setUserData,
-      anything,setAnything
+      anything,setAnything,
+      existingBranchData,setExistingBranchData
       }}>
     <Router>
         <CustomNavbar />

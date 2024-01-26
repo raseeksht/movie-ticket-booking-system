@@ -7,17 +7,19 @@ import AuthContext from '../../context/AuthContext'
 function AddBranch() {
     const authContext = useContext(AuthContext)
     const [branchData,setBranchData] = useState({})
-    const [existingBranchData,setExistingBranchData] = useState(null)
+    // const [existingBranchData,setExistingBranchData] = useState(null)
     const [btnState,setBtnState] = useState({add:true,edit:false})
     const [refresh,setRefresh] = useState(null)
 
     useEffect(() => {
-        fetch(apiurl+"/branches")
-        .then(resp=>resp.json())
-        .then(data=>{
-            setExistingBranchData(data.data)
-            console.log(data.data)
-        })
+        if (!authContext.existingBranchData){
+            fetch(apiurl+"/branches")
+            .then(resp=>resp.json())
+            .then(data=>{
+                authContext.setExistingBranchData(data.data)
+                console.log(data.data)
+            })
+        }
     }, [refresh])
 
     const handleAddBranch = (e,action="post")=>{
@@ -43,15 +45,12 @@ function AddBranch() {
     }
 
     const handleSelectChange = (e)=>{
-        const a = existingBranchData.filter(elem=>elem._id == e.target.value)
+        const a = authContext.existingBranchData.filter(elem=>elem._id == e.target.value)
         setBranchData({location:a[0].location,contact:a[0].contact})
         // makes add button disabled and edit btn clickable
         // editBranchId will contain the current _id of branch to be edited
         // later accessed from handleAddBranch() if req method=put
         setBtnState({add:false,edit:true,editBranchId:a[0]._id})
-
-        handleAddBranch(e,action="edit")
-
     }
 
     const handleEditBranch =(e)=>{
@@ -65,8 +64,8 @@ function AddBranch() {
         <form id='addBranchForm'>
         <Select className='md:w-1/3' onChange={(e)=>handleSelectChange(e)}>
                 <option>Select Any location to edit</option>
-                {existingBranchData ? 
-                    existingBranchData.map(elem=>(
+                {authContext.existingBranchData ? 
+                    authContext.existingBranchData.map(elem=>(
                         <option value={elem._id} key={elem._id}>{elem.location}</option>
                     )) : ""
                 }
