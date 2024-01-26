@@ -15,14 +15,18 @@ router.get("/",async (req,resp)=>{
 
 router.post("/",async (req,resp)=>{
     // seatsArrangement is mulidimentinal array
-    const {location,name,seatsArrangement} = req.body
-    const isBad = checkPayload({location,name,seatsArrangement})
+    const {location_ref,name,seatsArrangement} = req.body
+    const isBad = checkPayload({location_ref,name,seatsArrangement})
     if (isBad){
         return resp.status(400).json({"status":"failed",message:isBad})
     } 
 
     try{
-        const res = await audiModel.create({location,name,seats:seatsArrangement})
+        const hallCount = await audiModel.countDocuments({location_ref,name})
+        if (hallCount > 0){
+            return resp.status(400).json({status:"failed",message:`${name} already exist at that location`})
+        }
+        const res = await audiModel.create({location_ref,name,seats:seatsArrangement})
         resp.json({status:"ok",message:"Audi data Inserted Successfully"})
     }catch(err){
         resp.json({status:"failed","message":"failed to insert audi data",err})

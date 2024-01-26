@@ -42,7 +42,10 @@ const transactionSchema = new mongoose.Schema({
 
 const audiSchema = new mongoose.Schema({
     name:String,
-    location:String,
+    location_ref:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"our_branch"
+    },
     seats: mongoose.Schema.Types.Array
 })
 
