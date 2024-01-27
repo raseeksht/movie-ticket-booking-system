@@ -3,6 +3,7 @@ import { TextInput,Label,Select } from 'flowbite-react'
 import { apiurl } from '../apiurl'
 import customFetch from '../authfetch'
 import AuthContext from '../../context/AuthContext'
+import LocationSelect from './subcomponents/LocationSelect'
 
 function AddBranch() {
     const authContext = useContext(AuthContext)
@@ -12,12 +13,12 @@ function AddBranch() {
     const [refresh,setRefresh] = useState(null)
 
     useEffect(() => {
+        // no need to fetch if existingBranchData is already loaded
         if (!authContext.existingBranchData){
             fetch(apiurl+"/branches")
             .then(resp=>resp.json())
             .then(data=>{
                 authContext.setExistingBranchData(data.data)
-                console.log(data.data)
             })
         }
     }, [refresh])
@@ -34,14 +35,14 @@ function AddBranch() {
         customFetch(apiurl+"/branches",payload,{},action)
         .then(data=>{
             authContext.setAlert({type:"success",message:data.message})
+            // when exisingbranchdata is null and change in refresh will trigger branch refresh
+            authContext.setExistingBranchData(null)
             setRefresh(Math.random())
         })
         .catch(err=>{
             authContext.setAlert({type:"failure",message:String(err)})
             console.log("error:",err)
         })
-        
-
     }
 
     const handleSelectChange = (e)=>{
@@ -62,14 +63,7 @@ function AddBranch() {
     <div className='branchContainer md:px-8 w-[100%]'>
         <h1 className='text-2xl dark:text-slate-300 font-bold mb-5'>Add New / Edit Branch</h1>
         <form id='addBranchForm'>
-        <Select className='md:w-1/3' onChange={(e)=>handleSelectChange(e)}>
-                <option>Select Any location to edit</option>
-                {authContext.existingBranchData ? 
-                    authContext.existingBranchData.map(elem=>(
-                        <option value={elem._id} key={elem._id}>{elem.location}</option>
-                    )) : ""
-                }
-            </Select>
+            <LocationSelect handleSelectChange={handleSelectChange} />
             <div className='md:flex'>
 
             

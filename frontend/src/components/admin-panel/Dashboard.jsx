@@ -4,7 +4,7 @@ import AddNewMovie from './AddNewMovie'
 import SideNav from './SideNav'
 import NavContext from '../../context/NavContext'
 import AddBranch from './AddBranch'
-import AddHall from './AddHall'
+import AddHall from './hall/AddHall'
 
 function Dashboard() {
   const navigate = useNavigate()

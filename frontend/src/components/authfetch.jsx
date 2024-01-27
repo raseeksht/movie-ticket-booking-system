@@ -1,7 +1,6 @@
 const customFetch = (url, payload, customHeader = {},method="POST") => {
     return new Promise((resolve, reject) => {
         const token = localStorage.getItem("token");
-        console.log(token)
         if (!token) {
             const tokenError = new Error("Token not found")
             tokenError.name = "tokenError"
