@@ -53,7 +53,6 @@ const movieTimingSchema = new mongoose.Schema({
     movie_ref: mongoose.Schema.Types.ObjectId,
     date:String,
     time:String,
-    location:String,
     audi_ref:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"audi"
