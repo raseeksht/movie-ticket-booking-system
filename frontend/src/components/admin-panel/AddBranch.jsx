@@ -8,7 +8,6 @@ import LocationSelect from './subcomponents/LocationSelect'
 function AddBranch() {
     const authContext = useContext(AuthContext)
     const [branchData,setBranchData] = useState({})
-    // const [existingBranchData,setExistingBranchData] = useState(null)
     const [btnState,setBtnState] = useState({add:true,edit:false})
     const [refresh,setRefresh] = useState(null)
 
@@ -20,7 +19,7 @@ function AddBranch() {
             .then(data=>{
                 authContext.setExistingBranchData(data.data)
             })
-        }
+        }        
     }, [refresh])
 
     const handleAddBranch = (e,action="post")=>{

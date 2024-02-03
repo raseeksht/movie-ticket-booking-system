@@ -34,6 +34,15 @@ export default function LoginComponent(props) {
     .catch(err=>console.log("err",err))
   }
 
+  const handleRememberMeClick = (e)=>{
+    if (e.target.checked){
+      localStorage.setItem("sessionBasedLogin",0)
+    }else{
+      localStorage.setItem("sessionBasedLogin",1)
+    }
+    // alert(e.target.checked)
+  }
+
   return (
     <>
       <button onClick={() => authContext.setOpenLoginModal(true)} className='bg-red-500 px-3 py-1 rounded text-cyan-100'>Sign In</button>
@@ -66,7 +75,7 @@ export default function LoginComponent(props) {
             </div>
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
-                <Checkbox id="remember" />
+                <Checkbox id="remember" onClick={(e)=>handleRememberMeClick(e)}/>
                 <Label htmlFor="remember">Remember me</Label>
               </div>
               <a href="#" className="text-sm text-cyan-700 hover:underline dark:text-cyan-500">

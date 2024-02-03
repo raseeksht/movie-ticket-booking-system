@@ -3,6 +3,8 @@ import { TextInput, Label, Datepicker, Textarea } from 'flowbite-react'
 import customFetch from '../authfetch'
 import { apiurl } from '../apiurl'
 import AuthContext from '../../context/AuthContext'
+import LocationSelect from './subcomponents/LocationSelect'
+import AddMovieTimings from './subcomponents/AddMovieTimings'
 
 function AddNewMovie() {
   const [movieData, setMovieData] = useState({})
@@ -131,16 +133,7 @@ function AddNewMovie() {
 
       <hr className='mb-5' />
 
-      <div className='grid md:grid-cols-3 gap-3'>
-        <div>
-          <Datepicker />
-
-        </div>
-        <div>
-          <Datepicker />
-
-        </div>
-      </div>
+      <AddMovieTimings />
     </>
   )
 }

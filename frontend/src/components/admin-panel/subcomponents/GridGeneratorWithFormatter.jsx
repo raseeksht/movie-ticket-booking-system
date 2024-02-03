@@ -39,7 +39,7 @@ function GridGeneratorWithFormatter(props) {
         {
         props.seats && props.seats.map((row,rowIndex)=>(
                 
-        <div className='flex md:justify-center' key={rowIndex} value={rowIndex}>
+        <div className={`grid grid-flow-col ${row.length<=30?"md:justify-center":""}`} key={rowIndex} value={rowIndex}>
         {row.map((col,colIndex)=>(
             <div
                 key={colIndex}
@@ -47,10 +47,12 @@ function GridGeneratorWithFormatter(props) {
                     col=="0"?"bg-blue-500":
                     col=="N"?"bg-red-500":
                     col=="U"?"bg-gray-500":""
-                } h-7 w-7 m-1 text-center`}
+                } w-7 h-7 m-1 text-center`}
                 onClick={(e)=>handleSeatClick(e,rowIndex,colIndex)}
                 >
-                {String.fromCharCode(65 + rowIndex)}{colIndex}
+                <span className='text-xs'>
+                  {String.fromCharCode(65 + rowIndex)}{colIndex}
+                </span>
 
             </div>
 
@@ -62,18 +64,19 @@ function GridGeneratorWithFormatter(props) {
 
         {
         props.seats ? 
-        <div className='addhall__formatpainter'>
-    <div className='flex'>
+        <div className='addhall__formatpainter mt-5'>
+          <span className='text-xs'>*Click the color and click the seat to change the seat status</span>
+    <div className='flex my-1'>
         <div className=' w-7 h-7 bg-gray-500 text-center' onClick={()=>changeSeatFormatterMode("U")}></div>
         <div> &nbsp;Unavailable</div>
     </div>
 
-    <div className='flex'>
+    <div className='flex my-1'>
         <div className=' w-7 h-7 bg-red-500 text-center' onClick={()=>changeSeatFormatterMode("N")}></div>
         <div> &nbsp;No Seat</div>
     </div>
 
-    <div className='flex'>
+    <div className='flex my-1'>
         <div className=' w-7 h-7 bg-blue-500 text-center' onClick={()=>changeSeatFormatterMode("0")}></div>
         <div> &nbsp;Available</div>
     </div>

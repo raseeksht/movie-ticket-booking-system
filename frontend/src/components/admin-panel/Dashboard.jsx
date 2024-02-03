@@ -12,7 +12,7 @@ function Dashboard() {
   useEffect(() => {
     try{
       const data = JSON.parse(localStorage.getItem("data"))
-      if (data.usertype !== "admin"){
+      if (!data || data.usertype !== "admin"){
         navigate("/")
       }
     } catch(err){

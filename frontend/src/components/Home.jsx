@@ -21,14 +21,13 @@ export default function Home() {
             <div className="grid md:grid-cols-6 grid-cols-3">
 
             {movies && movies.map(movie=>(
-                // <h1>{movie.name}</h1>
                 <div className="mx-3 mb-6" key={movie._id}>
                     <MovieCard movie={movie} />
                 </div>
             ))}
             </div>
         
-        </div>   
+        </div>
     </>
   )
 }

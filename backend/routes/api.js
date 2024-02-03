@@ -13,5 +13,6 @@ router.use("/movies",require("./movies"))
 router.use("/tickets",require("./tickets"))
 router.use("/hall",require("./hall"))
 router.use("/branches",require("./branches"))
+router.use("/movietimings",require("./movietimings"))
 
 module.exports = router

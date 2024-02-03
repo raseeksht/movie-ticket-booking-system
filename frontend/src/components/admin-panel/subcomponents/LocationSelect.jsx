@@ -1,15 +1,25 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import AuthContext from '../../../context/AuthContext'
 import { Select } from 'flowbite-react'
+import { apiurl } from '../../apiurl'
 
 function LocationSelect(props) {
     const authContext = useContext(AuthContext)
     const handleSelectChange = (e) => {
         props.handleSelectChange(e)
     }
+    useEffect(()=>{
+        if (!authContext.existingBranchData){
+            fetch(apiurl+"/branches")
+            .then(resp=>resp.json())
+            .then(data=>{
+                authContext.setExistingBranchData(data.data)
+            })
+        }
+    })
   return (
     <>
-    <Select className='md:w-1/3' onChange={(e)=>handleSelectChange(e)}>
+    <Select className='' onChange={(e)=>handleSelectChange(e)}>
         <option>Select Any location to edit</option>
         {authContext.existingBranchData ? 
             authContext.existingBranchData.map(elem=>(

@@ -14,7 +14,7 @@ function ShowAlert() {
   return (
     <>
     {authContext.alert ? 
-        <Alert className='md:w-1/4 w-1/2 fixed bottom-10 right-10' color={authContext.alert.type} onDismiss={()=>authContext.setAlert(null)}>
+        <Alert className='md:w-1/4 w-1/2 fixed bottom-10 right-10 z-10' color={authContext.alert.type} onDismiss={()=>authContext.setAlert(null)}>
       {authContext.alert.message}
     </Alert>
     :
