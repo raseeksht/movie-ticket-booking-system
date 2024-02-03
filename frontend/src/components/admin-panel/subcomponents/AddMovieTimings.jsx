@@ -12,7 +12,7 @@ function AddMovieTimings() {
 
     const [timingForm, setTimingForm] = useState({})
     const [table, setTable] = useState({})
-    const [movies,setMovies] = useState({})
+    const [movies,setMovies] = useState(null)
 
     useEffect(() => {
         fetch(apiurl + "/hall").then(resp => resp.json())
@@ -31,7 +31,9 @@ function AddMovieTimings() {
             .catch(err => console.log(err))
         fetch(apiurl+"/movies")
         .then(resp=>resp.json())
-        .then(data=>setMovies(data.movies))
+        .then(data=>{
+            setMovies(data.movies)
+        })
         .catch(err=>console.log(err))
     }, [])
 
@@ -73,7 +75,7 @@ function AddMovieTimings() {
                             <Label htmlFor="showtime" color="success" value="Select Movie" />
                         </div>
                         <Select onChange={(e) => setTimingForm({ ...timingForm, movieId: e.target.value })}>
-                            <option>Select Branch</option>
+                            <option>Select Movie</option>
                             {movies && movies.map(movie => (
                                 <option value={movie._id} key={movie.id}>{movie.name}</option>
                             ))}
