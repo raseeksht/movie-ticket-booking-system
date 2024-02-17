@@ -3,8 +3,7 @@ import { TextInput, Label, Datepicker, Textarea } from 'flowbite-react'
 import customFetch from '../authfetch'
 import { apiurl } from '../apiurl'
 import AuthContext from '../../context/AuthContext'
-import LocationSelect from './subcomponents/LocationSelect'
-import AddMovieTimings from './subcomponents/AddMovieTimings'
+// import AddMovieTimings from './AddMovieTimings'
 
 function AddNewMovie() {
   const [movieData, setMovieData] = useState({})
@@ -114,16 +113,6 @@ function AddNewMovie() {
             />
           </div>
 
-          <div className='mb-3'>
-            <div className="mb-2 block">
-              <Label htmlFor="showtime" color="success" value="Movie Showtime" />
-            </div>
-            <TextInput placeholder='12:30 PM' id='showtime' required
-              value={movieData.showTime}
-              onChange={(e) => setMovieData({ ...movieData, showTime: e.target.value })}
-            />
-          </div>
-
         </div>
 
         <button onClick={(e) => handleAddMovie(e)} className='bg-green-600 px-8 py-2 rounded-lg mb-4'>
@@ -133,7 +122,7 @@ function AddNewMovie() {
 
       <hr className='mb-5' />
 
-      <AddMovieTimings />
+      {/* <AddMovieTimings /> */}
     </>
   )
 }

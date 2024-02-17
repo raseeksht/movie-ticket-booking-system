@@ -5,6 +5,7 @@ import SideNav from './SideNav'
 import NavContext from '../../context/NavContext'
 import AddBranch from './AddBranch'
 import AddHall from './hall/AddHall'
+import AddMovieTimings from './AddMovieTimings'
 
 function Dashboard() {
   const navigate = useNavigate()
@@ -36,6 +37,7 @@ function Dashboard() {
         {currentSection == "addmovie" ? <AddNewMovie /> :""}
         {currentSection == "addbranch" ? <AddBranch /> :""}
         {currentSection == "addhall" ? <AddHall /> :""}
+        {currentSection == "addtimings" ? <AddMovieTimings /> :""}
       </div>
       
     </div>

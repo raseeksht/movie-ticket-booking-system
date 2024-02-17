@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { TextInput, Label, Datepicker, Select, Table, TableCell } from 'flowbite-react'
-import { apiurl } from '../../apiurl'
-import { dateParse, sha256 } from '../../utils'
-import AuthContext from '../../../context/AuthContext'
-import customFetch from '../../authfetch'
+import { apiurl } from '../apiurl'
+import { dateParse, sha256 } from '../utils'
+import AuthContext from '../../context/AuthContext'
+import customFetch from '../authfetch'
 
 function AddMovieTimings() {
     const authContext = useContext(AuthContext)
@@ -55,10 +55,10 @@ function AddMovieTimings() {
 
     const handleAddTiming = ()=>{
         const timings = Object.values(table)
-        const movieId = timingForm.movieId
-        customFetch(`${apiurl}/movietimings/${movieId}`,{timings},"POST")
+        customFetch(`${apiurl}/movietimings/`,{timings},"POST")
         .then(data=>{
             authContext.setAlert({type:"success",message:data.message})
+            setTable({})
         })
         .catch(err=>{
             authContext.setAlert({type:"failure",message:String(err)})
