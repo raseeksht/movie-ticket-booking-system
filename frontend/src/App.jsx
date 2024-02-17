@@ -5,7 +5,7 @@ import {
   Routes,
   Route
 } from "react-router-dom"
-import MovieBookingPage from './components/MovieBookingPage'
+import MovieBookingPage from './components/movieBookingPage/MovieBookingPage'
 import AuthContext from './context/AuthContext'
 import Mytickets from './components/Mytickets'
 import Dashboard from './components/admin-panel/Dashboard'

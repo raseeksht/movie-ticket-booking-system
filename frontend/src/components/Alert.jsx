@@ -6,10 +6,14 @@ import { useEffect } from 'react';
 function ShowAlert() {
     const authContext = useContext(AuthContext)
     useEffect(() => {
-      setTimeout(()=>{
+      let temp;
+      temp = setTimeout(()=>{
         authContext.setAlert(null)
       },5000)
-      
+
+      return ()=>{
+        clearTimeout(temp)
+      }      
     }, [authContext.alert])
   return (
     <>
