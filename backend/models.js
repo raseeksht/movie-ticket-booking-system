@@ -15,9 +15,7 @@ const movieSchema = new mongoose.Schema({
     releaseDate:String,
     length:String,
     rating:String,
-    trailer:String,
-    showTime:String,
-    seats: mongoose.Schema.Types.Array
+    trailer:String
 })
 
 const userSeatsSchema = new mongoose.Schema({
@@ -56,7 +54,8 @@ const movieTimingSchema = new mongoose.Schema({
     audi_ref:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"audi"
-    }
+    },
+    seats_status:mongoose.Schema.Types.Array
 })
 
 const branchSchema = new mongoose.Schema({

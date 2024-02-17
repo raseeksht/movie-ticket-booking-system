@@ -1,5 +1,5 @@
 const express = require("express")
-const {movieModel} = require("../models")
+const {movieModel, movieTimingModel} = require("../models")
 const router = express.Router()
 const {verifyUser,isAdmin} = require("../middlewares/verifyuser")
 const {checkPayload,recordTxn,bookTicket,getVideoId} = require("./utils")
@@ -16,17 +16,14 @@ router.get("/",async (req,resp)=>{
 })
 
 router.post("/",isAdmin,async (req,resp)=>{
-    const {name,description,releaseDate,thumbnail,length,rating,trailer,showTime} = req.body
-    const isBad = checkPayload({name,description,releaseDate,thumbnail,length,rating,trailer,showTime})
+    const {name,description,releaseDate,thumbnail,length,rating,trailer} = req.body
+    const isBad = checkPayload({name,description,releaseDate,thumbnail,length,rating,trailer})
     if (isBad){
         return resp.json(isBad)
     }
 
     try{
-        // suppose the hall has 3 rows and six columns
-        const row=10,column =9;
-        const seats = Array.from({length:row},()=> new Array(column).fill(0))
-        const movie = await movieModel.create({name,description,releaseDate,thumbnail,seats,showTime,length,rating,trailer:getVideoId(trailer)})
+        const movie = await movieModel.create({name,description,releaseDate,thumbnail,length,rating,trailer:getVideoId(trailer)})
         resp.json({status:'ok',message:"movie added successfully",movie})
     }catch(err){
         resp.json({status:'failed',message:"error adding movie",err})
@@ -38,7 +35,13 @@ router.get("/:movieId",async (req,resp)=>{
     const movieId = req.params.movieId
     try{
         const movie = await movieModel.findOne({_id:movieId})
-        resp.json({status:"ok",movie})
+        const movieTimings = await movieTimingModel.find({movie_ref:movieId}).populate({
+            path:'audi_ref',
+            populate:{
+                path:"location_ref"
+            }
+        })
+        resp.json({status:"ok",movie,movieTimings})
     }
     catch(err){
         resp.json({err})
