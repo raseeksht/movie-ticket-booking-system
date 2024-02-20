@@ -7,7 +7,6 @@ const router = express.Router()
 router.get("/",async (req,resp)=>{
     try{
         const branches = await branchModel.find({})
-        console.log(branches)
         resp.json({status:"ok","message":"branch data Fetched successfully",data:branches})
     }catch(err){
         resp.status(500).json({"status":"failed",message:"Branch fetching error",err})
@@ -31,10 +30,8 @@ router.post("/",async (req,resp)=>{
 
 router.put("/",async (req,resp)=>{
     const {location,contact,_id} = req.body
-    console.log(location,contact,_id)
     try{
         const result = await branchModel.updateOne({_id},{location,contact})
-        console.log(result)
         resp.json({"status":"ok",message:"Branch Information Edited Successfully"})
     }catch(err){
         resp.status(500).json({"status":"failed",message:"Update Failed"})

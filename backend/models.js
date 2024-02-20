@@ -26,6 +26,10 @@ const userSeatsSchema = new mongoose.Schema({
     user_ref: mongoose.Schema.Types.ObjectId,
     date:String,
     time:String,
+    audi_ref:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"audi"
+    },
     seats:String,
     price:Number
 })
@@ -48,7 +52,10 @@ const audiSchema = new mongoose.Schema({
 })
 
 const movieTimingSchema = new mongoose.Schema({
-    movie_ref: mongoose.Schema.Types.ObjectId,
+    movie_ref: {
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"movie"
+    },
     date:String,
     time:String,
     audi_ref:{

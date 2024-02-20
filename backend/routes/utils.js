@@ -1,6 +1,7 @@
 
 const jwt = require("jsonwebtoken")
-const {transactionModel,userSeatsModel,movieModel} = require("../models")
+const {transactionModel,userSeatsModel,movieModel,movieTimingModel, audiModel} = require("../models")
+const mongoose = require("mongoose")
 
 function checkPayload(payload){
     // return fail json if key is missing else null
@@ -36,28 +37,43 @@ async function recordTxn(headers,pid,rid,scd,amt){
     }
 }
 
-function bookTicket(headers,movieId,bookedSeats){
+function bookTicket(headers,movieId,bookedSeats,audiId,date,time){
     const tokendata = getDecodedToken(headers)
-
     return new Promise(async (resolve,reject)=>{
         try{
-            const movie = await movieModel.findOne({_id:movieId})
+            const movieTimingFilter = {
+                movie_ref: movieId,
+                audi_ref: audiId,
+                date,
+                time
+            }
+            const movie = await movieTimingModel.findOne(movieTimingFilter)
             for (seat of bookedSeats){
                 const [x,y] = seat.split("-")
-                movie.seats[parseInt(x)][parseInt(y)] = 1
+                movie.seats_status[parseInt(x)][parseInt(y)] = 1
             }
-            const result = await movieModel.findOneAndUpdate(
-                { _id: movieId },
-                { $set: { seats: movie.seats} },
+            const result = await movieTimingModel.findOneAndUpdate(
+                movieTimingFilter,
+                { $set: { seats_status: movie.seats_status} },
                 { new: true }
-            );
+            ).populate({
+                path:"audi_ref",
+                populate:{
+                    path:"location_ref"
+                }
+            }).populate("movie_ref");
+
+            const location_ref = await audiModel.findOne({_id:audiId}).populate(['location_ref'])
+
             await userSeatsModel.create({
                 user_ref:tokendata.uid,
                 movie_ref:movieId,
                 seats: JSON.stringify(bookedSeats),
-                date: movie.releaseDate,
-                time: movie.showTime,
-                price: 250 * bookedSeats.length
+                date: date,
+                time: time,
+                price: 250 * bookedSeats.length,
+                audi_ref:audiId,
+                location_ref:location_ref
             })
 
             resolve(result)

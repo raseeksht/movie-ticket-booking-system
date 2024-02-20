@@ -64,7 +64,7 @@ router.put("/:movieId",isAdmin,async (req,resp)=>{
 
 router.post("/bookseat/:movieId",verifyUser,async (req,resp)=>{
     const movieId = req.params.movieId
-    const {bookedSeats,oid,refId,amt} = req.body
+    const {bookedSeats,oid,refId,amt,audiId,date,time} = req.body
     const scd = "EPAYTEST"
     try{
         const path="https://uat.esewa.com.np/epay/transrec";
@@ -82,8 +82,8 @@ router.post("/bookseat/:movieId",verifyUser,async (req,resp)=>{
             const txn = await recordTxn(req.headers,oid,refId,scd,amt)
 
             const movie = await movieModel.findOne({_id:movieId})
-            const result = bookTicket(req.headers,movieId,bookedSeats)
-            resp.json({ status: "ok", message: "Seats booked successfully",bookedSeats });
+            const result = await bookTicket(req.headers,movieId,bookedSeats,audiId,date,time)
+            resp.json({ status: "ok", message: "Seats booked successfully",bookedSeats,result });
 
         }else{
             console.log("payment not validate")
@@ -96,12 +96,13 @@ router.post("/bookseat/:movieId",verifyUser,async (req,resp)=>{
     }
 })
 
-router.post("/bookseatphysical/:movieId",verifyUser,(req,resp)=>{
+router.post("/bookseatphysical/:movieId",verifyUser, async (req,resp)=>{
     const movieId = req.params.movieId
-    const {bookedSeats} = req.body
+    const {bookedSeats,audiId,date,time} = req.body
     try{
-        const result = bookTicket(req.headers,movieId,bookedSeats)
-        resp.json({ status: "ok", message: "Seats booked successfully",bookedSeats });
+        const result = await bookTicket(req.headers,movieId,bookedSeats,audiId,date,time)
+        console.log(result)
+        resp.json({ status: "ok", message: "Seats booked successfully",bookedSeats ,result});
     }catch(err){
         console.log(err)
         resp.json({"status":"failed","message":"failed"})

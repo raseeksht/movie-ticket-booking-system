@@ -10,7 +10,13 @@ router.get("/",verifyUser,async (req,resp)=>{
     const tokendata = getDecodedToken(req.headers)
     // const uid = tokendata.uid
     try{
-        const userSeats = await userSeatsModel.find({user_ref:tokendata.uid}).populate(['movie_ref'])
+        // deep populate audi_ref so that branch info can also be sent
+        const userSeats = await userSeatsModel.find({user_ref:tokendata.uid}).populate(['movie_ref',{
+            path:"audi_ref",
+            populate:{
+                path:"location_ref"
+            }
+        }])
         console.log(userSeats)
         resp.json({status:"ok",message:"fetched successfully",data:userSeats})
     }catch(err){
