@@ -28,7 +28,6 @@ function AddNewMovie() {
       .catch(err => {
         authContext.setAlert({ type: "warning", "message": String(err) })
       })
-    console.log(movieData)
   }
 
   const handleDateChange = (date) => {
@@ -41,7 +40,7 @@ function AddNewMovie() {
 
   return (
     <>
-      <form id='addmovie_form md:px-8'>
+      <form id='addmovie_form' className=''>
         <div className='md:grid md:grid-cols-3 gap-3'>
           <div className='mb-3'>
             <div className="mb-2 block">

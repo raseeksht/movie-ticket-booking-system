@@ -48,7 +48,7 @@ function Mytickets() {
             <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
               {ticket.movie_ref.name}
             </Table.Cell>
-            <Table.Cell>{ticket.date + " " + ticket.movie_ref.showTime || "none"}</Table.Cell>
+            <Table.Cell>{ticket.date + " " + ticket.time || "none"}</Table.Cell>
             <Table.Cell>{seatsEncoder(JSON.parse(ticket.seats)).join(", ")}</Table.Cell>
             <Table.Cell>{ticket.price}</Table.Cell>
             <Table.Cell>
@@ -57,8 +57,9 @@ function Mytickets() {
                 movie:ticket.movie_ref.name,
                 date:ticket.date,
                 time:ticket.time,
-                location: ticket.location || "ATB Building",
-                seats: JSON.parse(ticket.seats)
+                location: ticket.audi_ref.location_ref.location,
+                seats: JSON.parse(ticket.seats),
+                audi:ticket.audi_ref.name
               })}             
               className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">
                 Download

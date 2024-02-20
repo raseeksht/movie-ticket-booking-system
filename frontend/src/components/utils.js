@@ -22,3 +22,12 @@ export function sha256(message) {
     })
 
 }
+
+export function getAudiId(ticketDetails,movieTimings){
+    for (let i = 0;i<movieTimings.length; i++){
+        console.log(ticketDetails)
+        if (movieTimings[i].audi_ref.location_ref._id == ticketDetails.branchId && movieTimings[i].date == ticketDetails.date && movieTimings[i].time == ticketDetails.time){
+            return movieTimings[i].audi_ref._id
+        }
+    }
+}

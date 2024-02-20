@@ -2,7 +2,7 @@ import QRCode from 'react-qr-code'
 import html2pdf from 'html2pdf.js'
 import ReactDOMServer from 'react-dom/server';
 
-function ticketMaker({movie,date,time,location,seats}){
+function ticketMaker({movie,date,time,location,seats,audi}){
     return (
         <>
         <div className="p-5 w-[300px]" id="container">
@@ -28,7 +28,7 @@ function ticketMaker({movie,date,time,location,seats}){
                 </div>
                 <div className="border-r-2 border-solid border-[red] w-[33.3%]">
                     <div>Audi</div>
-                    <div>1</div>
+                    <div>{audi ? audi : "error fetching audi. Contact admin"}</div>
                 </div>
                 <div className="w-[33.3%]">
                     <div>seats</div>
@@ -59,16 +59,16 @@ export function seatsEncoder(seats){
     return encodedSeats
 }
 
-const handleDownloadTicket = ({movie,date,time,location, seats})=>{
+const handleDownloadTicket = ({movie,date,time,location, seats,audi})=>{
     console.log("downloading")
     const options = {
         margin: 2,
         filename: `${movie}_ticket_${date}.pdf`,
         image: { type: 'jpeg', quality: 1 },
         html2canvas: { scale: 1 },
-        jsPDF: { unit: 'mm', format: [90, 150], orientation: 'portrait' }
+        jsPDF: { unit: 'mm', format: [90, 170], orientation: 'portrait' }
     };
-    const ticket = ticketMaker({movie,date,time,location, seats:seatsEncoder(seats)})
+    const ticket = ticketMaker({movie,date,time,location, seats:seatsEncoder(seats),audi})
     html2pdf(ReactDOMServer.renderToString(ticket),options)
 }
 
