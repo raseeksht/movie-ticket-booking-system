@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { Accordion, Select } from 'flowbite-react';
+import React, { useState, useEffect,useContext } from 'react';
+import { Accordion } from 'flowbite-react';
 import RenderSeats from './RenderSeats';
-// import {useAccordian} from 'flowbite-react';
+import MovieContex from '../../context/movieContext';
+
+
 function TimingSelector(props) {
+  const movieContext = useContext(MovieContex);
+
   const [branches, setBranches] = useState({ active: 'all' });
   const [dates, setDates] = useState({ active: "all" });
   const [times, setTimes] = useState({ active: "all" });
-  const [seatsArrangement, setSeatsArrangement] = useState(null);
-
 
   useEffect(() => {
-    const groupedBranches = props.movie.movieTimings.reduce((acc, currentItem) => {
+    const groupedBranches = movieContext.movie.movieTimings.reduce((acc, currentItem) => {
       const location = currentItem.audi_ref.location_ref.location;
       if (!acc[location]) {
         acc[location] = []
@@ -24,9 +26,9 @@ function TimingSelector(props) {
 
   useEffect(() => {
     // run when user selects any location and updates the dates states
-    const groupedDates = props.movie.movieTimings.reduce((acc, currentItem) => {
+    const groupedDates = movieContext.movie.movieTimings.reduce((acc, currentItem) => {
       const date = currentItem.date
-      if (currentItem.audi_ref.location_ref.location == branches.active) {
+      if (currentItem.audi_ref.location_ref._id == branches.active) {
         if (!acc[date]) {
           acc[date] = []
         }
@@ -34,7 +36,6 @@ function TimingSelector(props) {
       }
       return acc
     }, {})
-    console.log(groupedDates)
     // setDates({ ...dates, uniqueDates: groupedDates })
     setDates(prevDates => ({ active: "all", uniqueDates: groupedDates }));
 
@@ -43,7 +44,7 @@ function TimingSelector(props) {
   useEffect(() => {
     // run when user selects any location and updates the times states
     // setTimes({...times,active:"all"})
-    const groupedTimes = props.movie.movieTimings.reduce((acc, currentItem) => {
+    const groupedTimes = movieContext.movie.movieTimings.reduce((acc, currentItem) => {
       const time = currentItem.time
       if (currentItem.date == dates.active) {
         if (!acc[time]) {
@@ -53,7 +54,6 @@ function TimingSelector(props) {
       }
       return acc
     }, {})
-    console.log("groupedTimes ", groupedTimes)
     setTimes({ ...times, uniqueTimes: groupedTimes })
 
   }, [dates.active])
@@ -62,14 +62,15 @@ function TimingSelector(props) {
 
   const handleTimeClick = (time) => {
     setTimes({ ...times, active: times.uniqueTimes[time][0].time })
-    const choices = props.movie.movieTimings.filter(currentItem => {
-      if (currentItem.time == time && currentItem.date == dates.active && currentItem.audi_ref.location_ref.location == branches.active){
+    const choices = movieContext.movie.movieTimings.filter(currentItem => {
+      if (currentItem.time == time && currentItem.date == dates.active && currentItem.audi_ref.location_ref._id == branches.active){
         return true
       }else{
         return false
       }
     })
-    setSeatsArrangement(choices[0].seats_status)
+    movieContext.setSeatsArrangement(choices[0].seats_status)
+    movieContext.setTicketDetails({branchId:branches.active,date:dates.active, time:time})
   }
 
   return (
@@ -89,9 +90,9 @@ function TimingSelector(props) {
                   >All</button>
                   {branches.uniqueBranches && Object.keys(branches.uniqueBranches).map(branch => (
                     <button
-                      className={`${branches.active == branches.uniqueBranches[branch][0].audi_ref.location_ref.location ? "bg-red-500" : ""} mx-2 rounded-md px-2`}
+                      className={`${branches.active == branches.uniqueBranches[branch][0].audi_ref.location_ref._id ? "bg-red-500" : ""} mx-2 rounded-md px-2`}
                       key={branches.uniqueBranches[branch][0].audi_ref.location_ref._id}
-                      onClick={() => setBranches({ ...branches, active: branches.uniqueBranches[branch][0].audi_ref.location_ref.location })}
+                      onClick={() => setBranches({ ...branches, active: branches.uniqueBranches[branch][0].audi_ref.location_ref._id })}
                     >
                       {branches.uniqueBranches[branch][0].audi_ref.location_ref.location}
                     </button>
@@ -143,7 +144,10 @@ function TimingSelector(props) {
         <Accordion.Panel aria-expanded={true}>
           <Accordion.Title>Select Your Seats</Accordion.Title>
           <Accordion.Content>
-            <RenderSeats seatsArrangement={seatsArrangement} price={props.price} setPrice={props.setPrice} />
+            <RenderSeats 
+            seatsArrangement={movieContext.seatsArrangement}
+            seatsRenderer={1}
+            />
           </Accordion.Content>
         </Accordion.Panel>
       </Accordion>
