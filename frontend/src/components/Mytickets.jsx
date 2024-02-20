@@ -33,6 +33,7 @@ function Mytickets() {
         <Table.Head>
           <Table.HeadCell>Movie</Table.HeadCell>
           <Table.HeadCell>Date/Time</Table.HeadCell>
+          <Table.HeadCell>Location</Table.HeadCell>
           <Table.HeadCell>Seats</Table.HeadCell>
           <Table.HeadCell>Price</Table.HeadCell>
           <Table.HeadCell>Ticket</Table.HeadCell>
@@ -49,6 +50,7 @@ function Mytickets() {
               {ticket.movie_ref.name}
             </Table.Cell>
             <Table.Cell>{ticket.date + " " + ticket.time || "none"}</Table.Cell>
+            <Table.Cell>{ticket.audi_ref.location_ref.location}</Table.Cell>
             <Table.Cell>{seatsEncoder(JSON.parse(ticket.seats)).join(", ")}</Table.Cell>
             <Table.Cell>{ticket.price}</Table.Cell>
             <Table.Cell>

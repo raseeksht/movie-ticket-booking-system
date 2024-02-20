@@ -46,7 +46,7 @@ function TimingSelector(props) {
     // setTimes({...times,active:"all"})
     const groupedTimes = movieContext.movie.movieTimings.reduce((acc, currentItem) => {
       const time = currentItem.time
-      if (currentItem.date == dates.active) {
+      if (currentItem.date == dates.active && branches.active == currentItem.audi_ref.location_ref._id) {
         if (!acc[time]) {
           acc[time] = []
         }
