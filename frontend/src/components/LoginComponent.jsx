@@ -8,7 +8,7 @@ export default function LoginComponent(props) {
   const authContext = useContext(AuthContext)
   // const [openLoginModal, setOpenLoginModal] = useState(false);
   const [messages,setMessages] = useState({loginerr:""})
-  const [creds,setCreds] = useState({username:"abc",password:"s21",usertype:"normal"})
+  const [creds,setCreds] = useState({username:"admin",password:"admin",usertype:"admin"})
 
   const handleLogin = () => {
     fetch(apiurl+"/login/",{
