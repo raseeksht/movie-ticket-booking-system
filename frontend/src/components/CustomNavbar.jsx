@@ -76,7 +76,7 @@ export default function CustomNavbar(props) {
           <Dropdown.Item as={Link} to="/tickets">
             My tickets
           </Dropdown.Item>
-          <Dropdown.Item>Settings</Dropdown.Item>
+          <Dropdown.Item as={Link} to="/settings">Settings</Dropdown.Item>
           <Dropdown.Item><DarkThemeToggle /> Toggle Theme</Dropdown.Item>
           
           <Dropdown.Divider />
@@ -86,17 +86,14 @@ export default function CustomNavbar(props) {
         <Navbar.Toggle />
       </div>
       <Navbar.Collapse>
-        <NavbarLink>
+        <NavbarLink active={authContext.navActive=="home"}>
           <Link to="/">Home</Link>
         </NavbarLink>
-        <NavbarLink>
+        <NavbarLink active={authContext.navActive=="about"}>
           <Link to="/about">About Us</Link>
         </NavbarLink>
-        <NavbarLink>
+        <NavbarLink active={authContext.navActive=="about"}>
           <Link to="/about">Contact Us</Link>
-        </NavbarLink>
-        <NavbarLink>
-          <Link to="/about">Profile</Link>
         </NavbarLink>
       </Navbar.Collapse>
     </Navbar>

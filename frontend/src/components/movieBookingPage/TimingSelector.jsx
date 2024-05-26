@@ -77,7 +77,7 @@ function TimingSelector(props) {
     <>
       <h1>Timing Selector</h1>
       <Accordion>
-        <Accordion.Panel aria-expanded={false}>
+        <Accordion.Panel isOpen={false}>
           <Accordion.Title>Select Date/Time</Accordion.Title>
           <Accordion.Content>
             {props.movie ?
@@ -141,7 +141,7 @@ function TimingSelector(props) {
 
           </Accordion.Content>
         </Accordion.Panel>
-        <Accordion.Panel aria-expanded={true}>
+        <Accordion.Panel isOpen={false}>
           <Accordion.Title>Select Your Seats</Accordion.Title>
           <Accordion.Content>
             <RenderSeats 

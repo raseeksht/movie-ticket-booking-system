@@ -10,6 +10,8 @@ import AuthContext from './context/AuthContext'
 import Mytickets from './components/Mytickets'
 import Dashboard from './components/admin-panel/Dashboard'
 import CustomNavbar from './components/CustomNavbar'
+import About from './components/About'
+import Settings from './components/settings/Settings'
 
 export default function App() {
   const [openLoginModal, setOpenLoginModal] = useState(false);
@@ -18,6 +20,7 @@ export default function App() {
   const [isLoggedIn,setIsLoggedIn] = useState(Boolean(localStorage.getItem("token")))
   const [userData,setUserData] = useState(JSON.parse(localStorage.getItem("data")) || {})
   const [existingBranchData,setExistingBranchData] = useState(null)
+  const [navActive,setNavActive] = useState("home")
 
   const [anything,setAnything] = useState({})
 
@@ -33,7 +36,8 @@ export default function App() {
       alert,setAlert,
       userData,setUserData,
       anything,setAnything,
-      existingBranchData,setExistingBranchData
+      existingBranchData,setExistingBranchData,
+      navActive,setNavActive
       }}>
     <Router>
         <CustomNavbar />
@@ -43,6 +47,9 @@ export default function App() {
         <Route path="/home" Component={Home}></Route>
         <Route path='/tickets' Component={Mytickets}></Route>
         <Route path='/admin-panel' Component={Dashboard}></Route>
+        <Route path='/about' Component={About}></Route>
+        <Route path='/settings' Component={Settings}></Route>
+
 
 
       </Routes>
